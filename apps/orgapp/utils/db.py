@@ -1,7 +1,53 @@
 import csv
+import json
+
 from app.database import db_session, Base, engine
 from app.models import App, AppType, Organization, Department, Tag, Connection, Header
+from app.serializer import \
+        TagSerializer, ConnectionSerializer, HeaderSerializer,\
+        AppTypeSerializer, OrganizationSerializer, AppSerializer,\
+        DepartmentSerializer
+from utils.insert import AppTypeInsert, AppInsert, DepartmentInsert,\
+        OrganizationInsert, TagInsert, ConnectionInsert, HeaderInsert
 
+# Create table <-> models mapping:
+#   table -> (<model>, <serializer>, <insert>)
+table_models_map = { 
+    'apptype':      {
+        'model': AppType, 
+        'serializer': AppTypeSerializer,
+        'insert': AppTypeInsert
+    },
+    'application':  {
+        'model': App, 
+        'serializer': AppSerializer,
+        'insert': AppInsert
+    },
+    'organization': {
+        'model': Organization, 
+        'serializer': OrganizationSerializer,
+        'insert': OrganizationInsert
+    },
+    'department':   {
+        'model': Department, 
+        'serializer': DepartmentSerializer,
+        'insert': DepartmentInsert
+    },
+    'tag':          {
+        'model': Tag, 
+        'serializer': TagSerializer, 
+        'insert': TagInsert
+    },
+    'connection':   {
+        'model': Connection, 
+        'serializer': ConnectionSerializer, 
+        'insert': ConnectionInsert
+    },
+    'header':       {
+        'model': Header, 
+        'serializer': HeaderSerializer,
+        'insert': HeaderInsert}
+}
 
 def get_csv_data(file_path):
     """ Returns the CSV data as dictionary """
@@ -32,7 +78,7 @@ def populate_from_samples():
         db_session.commit()
 
     # Departments
-    try:
+    try:   
         for row in get_csv_data('samples/departments.csv'):
             org = db_session.query(Organization).filter_by(desc=row['Organization']).one()
             dpt = Department(desc=row['Department'], org=org)
@@ -80,3 +126,29 @@ def populate_from_samples():
             db_session.add(header)
     finally:
         db_session.commit()
+
+def export_tables(output=None):
+    """ Export all tables to JSON files """
+    # Get list of tables
+    tables = Base.metadata.tables
+
+    if output:
+        # Export tables to JSON
+        tables = ['department', 'organization', 'connection', 'tag', 'header', 'apptype', 'application']
+        for t in tables:
+            print("Exporting %s ..." % t)
+            result = [i for i in table_models_map[t]['model'].query.all()]
+            serialized = table_models_map[t]['serializer'](result, many=True)
+
+            # Write to JSON file
+            with open(output + "/" + t + ".json", 'w') as outfile:
+                json.dump(serialized.data, outfile, sort_keys=True, indent=2)
+
+    else:
+        print("[!] output folder not specified. Aborted.")
+
+def insert_data(table, jsonfile):
+    """ Insert data into table from jsonfile """
+    with open(jsonfile) as infile:
+        data = json.load(infile)
+        table_models_map[table]['insert'](data)

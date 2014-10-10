@@ -2,6 +2,7 @@
 import os, sys
 import csv
 import pandas as pd
+import json
 from flask import Flask, current_app, jsonify
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -70,47 +71,25 @@ def init():
 @db_manager.option('-o', '--output', help='Specify folder where to export JSON files')
 def export(output=None):
     """ Export all tables to JSON files """
-    import pandas as pd
-    import csv
-    import json
-    from app.database import db_session as db, Base, engine
-    from app.models import App, AppType, Organization, Department, Tag, Connection, Header
-    from app.serializer import \
-        TagSerializer, ConnectionSerializer, HeaderSerializer,\
-        AppTypeSerializer, OrganizationSerializer, AppSerializer,\
-        DepartmentSerializer
+    from utils.db import export_tables
 
-    # Get list of tables
-    tables = Base.metadata.tables
-
-    # Create table <-> models mapping:
-    #   table -> (<model>, <serializer>)
-    table_models_map = { 
-        'apptype':      (AppType, AppTypeSerializer),
-        'application':  (App, AppSerializer),
-        'organization': (Organization, OrganizationSerializer),
-        'department':   (Department, DepartmentSerializer),
-        'tag':          (Tag, TagSerializer),
-        'connection':   (Connection, ConnectionSerializer),
-        'header':       (Header, HeaderSerializer)
-    }
-
-    if output:
-        # Export tables to JSON
-        tables = ['department', 'organization', 'connection', 'tag', 'header', 'apptype', 'application']
-        for t in tables:
-            print("Exporting %s ..." % t)
-            result = [i for i in table_models_map[t][0].query.all()]
-            serialized = table_models_map[t][1](result, many=True)
-
-            with open(output + "/" + t + ".json", 'w') as outfile:
-                json.dump(serialized.data, outfile, sort_keys=True, indent=2)
-
+    try:
+        export_tables(output)
+    finally:
         print("[!] DB tables successfully exported to %s as JSON!" % output)
-    else:
-        print("[!] output folder not specified. Aborted.")
-    
 
+@db_manager.option('-t', '--table', dest='table', help='Table where to insert data', required=True)
+@db_manager.option('-f', '--file', dest='jsonfile', help='JSON file to be imported', required=True)
+def insert(table, jsonfile):
+    """ Insert data from JSON file into table """
+    from utils.db import insert_data
+    
+    try:
+        insert_data(table, jsonfile)
+    finally:
+        print("[!] Imported data from <%s> into <%s> table!" % (jsonfile, table))
+
+    
 # Manager ---------------------------------------------------------------------
 @manager.command
 def run():
