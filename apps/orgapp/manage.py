@@ -1,24 +1,41 @@
 # Set the path
 import os, sys
 import csv
-from flask import Flask
+from flask import Flask, current_app
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from flask.ext.script import Manager, Server
-from app import app
+from flask.ext.script import Manager
+from werkzeug.serving import run_simple
+from app import app, register_blueprints
 
-manager = Manager(app)
+# Factory app
+def create_app(config=None):
+    if config:
+        app.config.from_object("config." + config)
+    else:
+        app.config.from_object("config.default")
+    return app
 
-# Turn on debugger by default and reloader
-manager.add_command("runserver", Server(
-    use_debugger = True,
-    use_reloader = True,
-    port = '5000',
-    host = '127.0.0.1')
-)
+# Create app 
+manager = Manager(create_app)
+manager.add_option('-c', '--config', help='Configuration')
 
 @manager.command
-def initdb():
+def run():
+    # Register blueprints
+    register_blueprints(app)
+
+    # Run WSGI application
+    run_simple(
+        app.config['HOST'], 
+        app.config['PORT'], 
+        app, 
+        use_reloader=app.config['RELOAD'],
+        use_debugger=app.config['DEBUG']
+    )
+
+@manager.command
+def initdb(config=None):
     """  Read data from CSV files and init DB """
     from app.database import db_session, Base, engine
     from app.models import App, AppType, Organization, Department, Tag, Connection
