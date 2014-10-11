@@ -27,6 +27,9 @@
   <!-- nvd3 css -->
   <link href="{{ url_for('static', filename='css/plugins/nvd3/nv.d3.min.css') }}" rel="stylesheet">
 
+  <!-- bootstrap-table css -->
+  <link href="{{ url_for('static', filename='css/plugins/bootstrap-table/bootstrap-table.min.css') }}" rel="stylesheet">
+
   <!-- Custom CSS settings -->
   <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
 
@@ -72,6 +75,14 @@
 
     <!-- nvd3 -->
     <script src="{{ url_for('static', filename='js/plugins/nvd3/nv.d3.min.js') }}"></script>
+
+    <!-- tableExport -->
+    <script src="{{ url_for('static', filename='js/plugins/tableExport/tableExport.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/plugins/tableExport/jquery.base64.js') }}"></script>
+
+    <!-- bootstrap-table -->
+    <script src="{{ url_for('static', filename='js/plugins/bootstrap-table/bootstrap-table.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/plugins/bootstrap-table/extensions/bootstrap-table-export.js') }}"></script>
 
     {% block scripts %}
     {% endblock %}

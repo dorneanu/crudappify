@@ -55,24 +55,48 @@ def charts(table=None):
     else:
         return "<p>ERROR</p>"
 
-@apps.route("/get/targets")
-def targets():
+@apps.route('/api/get/targets/<mode>')
+def targets(mode=None):
     """ Returns targets """
     tags = [t.name for t in Tag.query.all()]
     tags_count = {}
 
-    targets = db_session.query(Target)
-    # Return tags count for all targets
-    for t in tags:
-        count = targets.filter(Target.tags.any(Tag.name.startswith(t))).count()
-        tags_count[t] = count
-        
-    # Transform to JSON
-    df = pd.DataFrame(pd.Series(tags_count))
-    df = df.reset_index()
-    df.columns=['label', 'value']
-    json_obj = df.to_dict(outtype="records")
-    json_dict = { "tags": json_obj, "discrete": [{ "key": "Cumulative Return", "values": json_obj }]}
 
-    return jsonify(json_dict)
+    targets = db_session.query(Target)
+
+    # Return tags
+    if mode == "tags":
+        # Return tags count for all targets
+        for t in tags:
+            count = targets.filter(Target.tags.any(Tag.name.startswith(t))).count()
+            tags_count[t] = count
+            
+        # Transform to JSON
+        df = pd.DataFrame(pd.Series(tags_count))
+        df = df.reset_index()
+        df.columns=['label', 'value']
+        json_obj = df.to_dict(outtype="records")
+
+        # Build dict
+        json_dict = { 
+            "tags": json_obj, 
+            "discrete": [{ "key": "Cumulative Return", "values": json_obj }]
+        }
+
+        return jsonify(json_dict)
+
+    # Return records
+    elif mode == "table":
+        df = pd.DataFrame([[t.scheme, t.netloc, t.port, t.path, t.comments] for t in targets.all()], 
+                    columns=["scheme", "netloc", "port", "path", "comments"])
+        json_obj = df.to_dict(outtype="records")
+        json_dict = { "targets" : json_obj}
+        
+        return jsonify(json_dict)
+
+    # No mode specified
+    else:
+        return 'No mode specified'
+
+
  
