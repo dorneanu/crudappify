@@ -25,14 +25,13 @@ class AppTypeAdmin(sqla.ModelView):
 
 class AppAdmin(sqla.ModelView):
     column_display_pk = False
-    form_columns = ['desc', 'app_type', 'department', 'url', 'date_added', 'tags']
+    form_columns = ['desc', 'app_type', 'version', 'environment', 'platform', 'department', 'date_added', 'tags', 'url']
 
     # Add here list of columns where to search
-    column_searchable_list = ('desc', 'url', Tag.name)
+    column_searchable_list = ('desc', 'url', 'version', 'environment', 'platform', Tag.name)
 
     # Define here filters
-    column_filters = ('desc', 'department', 'app_type', 'url', 'app_id', 'date_added', 'tags')
-
+    column_filters = ('desc', 'department', 'app_type', 'url', 'app_id', 'version', 'environment', 'platform', 'date_added', 'tags')
 
     # Define which fields should be preloaded by Ajax
     form_ajax_refs = {
@@ -58,7 +57,7 @@ class OrgAdmin(sqla.ModelView):
 
 class DepartmentAdmin(sqla.ModelView):
     column_display_pk = False
-    form_columns = ['org_id', 'desc']
+    form_columns = ['org_id', 'desc', 'contact']
     column_searchable_list = ('desc', Organization.desc)
     column_filters = ('desc', 'org')
 

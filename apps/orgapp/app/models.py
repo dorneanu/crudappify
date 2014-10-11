@@ -42,6 +42,11 @@ class App(Base):
 	date_added = sql.Column(sql.Text)
 	department_id = sql.Column(sql.Integer, sql.ForeignKey('department.id'))
 
+	# Technical info
+	version = sql.Column(sql.Text)
+	environment = sql.Column(sql.Text)
+	platform = sql.Column(sql.Text)
+
 	# Define relationships
 	app_type = relationship('AppType', backref='applications')
 	department = relationship('Department', backref='applications')
@@ -63,6 +68,7 @@ class Department(Base):
 	org_id = sql.Column(sql.Integer, sql.ForeignKey("organization.id"))
 	org = relationship('Organization', backref="departments")
 	desc = sql.Column(sql.String(50))
+	contact = sql.Column(sql.Text)
 
 	def __unicode__(self):
 		return "%s -> %s" % (self.org.desc, self.desc)
