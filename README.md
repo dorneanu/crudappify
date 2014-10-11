@@ -1,0 +1,4 @@
+crudappify
+==========
+
+Several CRUD Applications
