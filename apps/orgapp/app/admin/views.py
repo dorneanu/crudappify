@@ -8,7 +8,7 @@ from wtforms import validators
 
 from app import app
 from app.database import db_session
-from app.models import AppType, App, Organization, Department, Connection, Tag
+from app.models import AppType, App, Organization, Department, Connection, Header, Tag
 
 
 class CustomView(sqla.ModelView):
@@ -72,9 +72,19 @@ class DepartmentAdmin(sqla.ModelView):
 
 class ConnectionAdmin(sqla.ModelView):
     column_display_pk = True
-    form_columns = ['conn_id', 'url', 'port', 'answer', 'header', 'value']
-    column_searchable_list = ('url', 'answer', 'header', 'value')
-    column_filters = ('url', 'port', 'answer', 'header', 'value')
+    form_columns = ['conn_type', 'url', 'port', 'answer', 'redirect', 'tags']
+    column_searchable_list = ('conn_type', 'url', 'answer', 'redirect')
+    column_filters = ('conn_type', 'url', 'port', 'answer', 'redirect')
+    
+    # Define which fields should be preloaded by Ajax
+    form_ajax_refs = {
+        'tags': {
+            'fields': (Tag.name,)
+        }
+    }
+
+class HeaderAdmin(sqla.ModelView):
+    form_columns = ['conn_id', 'header', 'value']
 
 
 # Add admin functionality
@@ -86,5 +96,6 @@ admin.add_view(AppTypeAdmin(AppType, db_session))
 admin.add_view(sqla.ModelView(Tag, db_session))
 admin.add_view(AppAdmin(db_session))
 admin.add_view(ConnectionAdmin(Connection, db_session))
+admin.add_view(HeaderAdmin(Header, db_session))
 admin.add_view(OrgAdmin(Organization, db_session))
 admin.add_view(DepartmentAdmin(db_session))

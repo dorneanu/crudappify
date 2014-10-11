@@ -1,9 +1,9 @@
-URL,Port,Answer,Header,Value
-http://google.de,80,200,server,Apache
-http://google.de,80,200,connection,close
-https://amazon.com,443,200,cache-control,private
-https://amazon.com,443,200,server,Microsoft-IIS/7.5
-http://amazon.com,80,200,content-type,text/html
-http://amazon.com,80,200,accept-ranges,bytes
-http://twitter.com,80,200,content-length,0
-http://twitter.com/blabla,80,404,connection,close
+Type	URL	Port	Answer	Header	Value
+http	http://google.de	80	200	server	Apache
+http	http://google.de	80	200	connection	close
+http	https://amazon.com	443	200	cache-control	private
+http	https://amazon.com	443	200	server	Microsoft-IIS/7.5
+http	http://amazon.com	80	200	content-type	text/html
+http	http://amazon.com	80	200	accept-ranges	bytes
+http	http://twitter.com	80	200	content-length	0
+http	http://twitter.com/blabla	80	404	connection	close
