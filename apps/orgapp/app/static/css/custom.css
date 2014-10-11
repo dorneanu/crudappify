@@ -1,0 +1,38 @@
+/* Custom settings */
+.navbar {
+	background-color: #efefef;
+	border: none;
+	margin-bottom: 0px;
+}
+
+div.navbar-default {
+	background: #FFF;
+	padding-bottom: 200px;
+}
+
+.navbar-inverse {
+	background-image: none;
+}
+
+.navbar-fixed-top, .navbar-fixed-bottom {
+	position: absolute;
+	top: 0px;
+}
+
+#page-wrapper {
+	margin-top: 50px;
+}
+span.glyphicon-pencil {
+	font-size: 0.8em;
+}
+
+.icon span.glyphicon-trash{
+	font-size: 0.8em;
+}
+
+/*
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+*/

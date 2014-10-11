@@ -1,0 +1,94 @@
+{% extends "layout-main.html" %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-lg-12">
+			<h2>Connection Charts</h2>
+			<hr>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					Target port
+				</div>
+				<div class="panel-body">
+					<div id="pie_chart">
+			  		</div>
+			  	</div>
+	    	</div>
+	    	<!-- /.panel -->
+    	</div>
+    	<!-- /.col-lg-6 -->
+
+    	<div class="col-lg-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					Connections per port
+				</div>
+				<div class="panel-body">
+					<div id="bar_chart">
+			  		</div>
+			  	</div>
+	    	</div>
+	    	<!-- /.panel -->
+    	</div>
+    	<!-- /.col-lg-6 -->
+
+    	<div class="col-lg-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					Bubble chart
+				</div>
+				<div class="panel-body">
+					<div id="bubble_chart">
+			  		</div>
+			  	</div>
+	    	</div>
+	    	<!-- /.panel -->
+    	</div>
+    	<!-- /.col-lg-12-->
+    </div>
+    <!-- /.row -->
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+	var container = '#pie_chart'
+    var data  = JSON.parse({{ json_data|tojson|safe }});
+    var width = $(container).parent().width();
+    var svg = dimple.newSvg(container, width, 400);
+
+	var myChart = new dimple.chart(svg, data);
+    myChart.addMeasureAxis("p", "url");
+    myChart.addSeries("port", dimple.plot.pie);
+    myChart.draw();
+</script>
+
+<script type="text/javascript">
+	var container = '#bar_chart'
+    var data  = JSON.parse({{ json_data|tojson|safe }});
+    var width = $(container).parent().width();
+    var svg = dimple.newSvg(container, width, 400);
+
+	var myChart = new dimple.chart(svg, data);
+    myChart.addCategoryAxis("x", 'answer');
+    myChart.addMeasureAxis('y', 'port');
+    myChart.addSeries("answer", dimple.plot.bar);
+    myChart.draw();
+</script>
+
+<script type="text/javascript">
+	var container = '#bubble_chart'
+    var data  = JSON.parse({{ json_data|tojson|safe }});
+    var width = $(container).parent().width();
+    var svg = dimple.newSvg(container, width, 400);
+
+	var myChart = new dimple.chart(svg, data);
+    myChart.addCategoryAxis("x", 'answer');
+    myChart.addMeasureAxis("y", "port");
+    myChart.addSeries("port", dimple.plot.bubble);
+    myChart.draw();	
+</script>
+{% endblock %}

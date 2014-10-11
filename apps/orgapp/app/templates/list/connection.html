@@ -1,0 +1,52 @@
+{% extends "layout-main.html" %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel-heading">
+				<h2>List of Connections</h2>
+				<hr>
+			</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					   <table class="table table-striped table-bordered table-hover" id="connectionTable">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>URL</th>
+								<th>Port</th>
+								<th>Answer</th>
+								<th>Header</th>
+								<th>Value</th>
+							</tr>
+						</thead>
+						<tfoot>
+							<tr>
+								<th>ID</th>
+								<th>URL</th>
+								<th>Port</th>
+								<th>Answer</th>
+								<th>Header</th>
+								<th>Value</th>
+							</tr>
+						</tfoot>
+						<tbody>
+	    					{% for conn in connections %}	
+	    					<tr>
+	    						<td>{{ conn.conn_id }}</td>
+	    						<td>{{ conn.url }}</td>
+	    						<td>{{ conn.port }}</td>
+	    						<td>{{ conn.answer }}</td>
+	    						<td>{{ conn.header }}</td>
+	    						<td>{{ conn.value }}</td>
+	    					<tr>
+	    					{% endfor %}
+	    				</tbody>
+	    			</table>
+	    		</div>
+	    	</div>
+    	</div>
+    </div>
+    <!-- /.row -->
+{% endblock %}
+

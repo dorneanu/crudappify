@@ -1,0 +1,10 @@
+Flask==0.10.1
+Flask-Admin==1.0.9.dev0
+Flask-SQLAlchemy==2.0
+Flask-Script==2.0.5
+Jinja2==2.7.3
+MarkupSafe==0.23
+SQLAlchemy==0.9.7
+WTForms==1.0.5
+Werkzeug==0.9.6
+itsdangerous==0.24

@@ -1,0 +1,25 @@
+{% extends 'admin/model/edit.html' %}
+
+{% block brand %}
+<div class="row">
+	<div class="col-lg-12">
+    	<h2 id="brand">Edit {{ admin_view.name|capitalize }}</h2>
+    	<div class="clearfix"></div>
+    	<hr>
+    </div>
+</div>
+<!-- /.row -->
+{% endblock %}
+
+{% block body %}
+<div class="row">
+	<div class="col-lg-6">
+  {% call lib.form_tag(form) %}
+      {{ lib.render_form_fields(form, form_opts=form_opts) }}
+      <div class="form-buttons">
+        {{ lib.render_form_buttons(return_url) }}
+      </div>
+  {% endcall %}
+  	</div>
+</div>
+{% endblock %}
