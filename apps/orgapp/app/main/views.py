@@ -8,7 +8,7 @@ apps = Blueprint('apps', __name__,)
 @apps.route("/")
 def index():
     return render_template("index.html")
-    
+
 @apps.route("/list/<table>")
 def list(table=None):
     """ List specified table """
@@ -44,7 +44,7 @@ def charts(table=None):
 
         # Generate json data
         raw_data = [
-            {'url' : c.url, 'port' : c.port, 'answer' : c.answer, 'header': c.header} 
+            {'url' : c.url, 'port' : c.port, 'answer' : c.answer}
             for c in conns
         ]
         json_data = json.dumps(raw_data)
