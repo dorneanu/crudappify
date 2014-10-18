@@ -8,7 +8,7 @@ class TagSerializer(Serializer):
 class ConnectionSerializer(Serializer):
 	tags = fields.Nested(TagSerializer, many=True)
 	class Meta:
-		fields = ('id', 'conn_type', 'url', 'port', 'answer', 'redirect', 'tags')
+		fields = ('id', 'conn_type', 'url', 'port', 'answer', 'ip', 'redirect', 'tags')
 
 
 class HeaderSerializer(Serializer):
@@ -44,3 +44,8 @@ class AppSerializer(Serializer):
 	department = fields.Nested(DepartmentSerializer)
 	app_type = fields.Nested(AppTypeSerializer)
 	tags = fields.Nested(TagSerializer, many=True)
+
+class TargetSerializer(Serializer):
+	tags = fields.Nested(TagSerializer, many=True)
+	class Meta :
+		fields = ('id', 'scheme', 'user', 'password', 'netloc', 'port', 'path', 'params', 'query', 'fragment', 'tags')

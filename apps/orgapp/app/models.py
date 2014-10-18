@@ -18,6 +18,11 @@ app_tags_table = sql.Table('app_tags', Base.metadata,
                  sql.Column('tag_id', sql.Integer, ForeignKey('tag.id'))
 )
 
+target_tags_table  = sql.Table('target_tags', Base.metadata,
+                sql.Column('target_id', sql.Integer, ForeignKey('target.id')),
+                sql.Column('tag_id', sql.Integer, ForeignKey('tag.id'))
+)
+
 conn_tags_table = sql.Table('conn_tags', Base.metadata,
                  sql.Column('conn_id', sql.Integer, ForeignKey('connection.id')),
                  sql.Column('tag_id', sql.Integer, ForeignKey('tag.id'))
@@ -66,6 +71,31 @@ class App(Base):
         return self.desc
 
 
+class Target(Base):
+    """ Table of targets """
+    __tablename__ = "target"
+
+    id = sql.Column(sql.Integer, primary_key=True)
+    scheme = sql.Column(sql.Text)
+    user = sql.Column(sql.Text)
+    password = sql.Column(sql.Text)
+    netloc = sql.Column(sql.Text)
+    port = sql.Column(sql.Integer)
+    path = sql.Column(sql.Text)
+    params = sql.Column(sql.Text)
+    query = sql.Column(sql.Text)
+    fragment = sql.Column(sql.Text)
+
+    tags = relationship('Tag', secondary=target_tags_table)
+
+    def __unicode__(self):
+        return self.netloc
+
+    def __str__(self):
+        #return "%s://%s/%s" % (self.scheme, self.netloc, self.path)
+        return self.id
+
+
 class Department(Base):
     """ Table of departments """
     __tablename__ = "department"
@@ -106,16 +136,17 @@ class Connection(Base):
     id = sql.Column(sql.Integer, primary_key=True)
     conn_type = sql.Column(sql.String(30))
     url = sql.Column(sql.Text)
+    ip = sql.Column(sql.Text)
     port = sql.Column(sql.Integer)
     answer = sql.Column(sql.String(50))
     redirect = sql.Column(sql.Text)
     tags = relationship('Tag', secondary=conn_tags_table)
 
     def __unicode__(self):
-        return self.url
+        return "%d -> %s" % (self.id, self.url)
 
     def __str__(self):
-        return "%s -> %d" % (self.url, self.port)
+        return "%d -> %s -> %d" % (self.id, self.url, self.port)
 
 
 class Header(Base):

@@ -8,7 +8,7 @@ from wtforms import validators
 
 from app import app
 from app.database import db_session
-from app.models import AppType, App, Organization, Department, Connection, Header, Tag
+from app.models import AppType, App, Target, Organization, Department, Connection, Header, Tag
 
 
 class CustomView(sqla.ModelView):
@@ -51,13 +51,27 @@ class AppAdmin(sqla.ModelView):
         super(AppAdmin, self).__init__(App, session)
 
 
+class TargetAdmin(sqla.ModelView):
+    column_filters = ('scheme', 'user', 'password', 'netloc', 'port', 'path', 'params', 'query', 'fragment')
+    column_searchable_list = ('scheme', 'user', 'password', 'netloc', 'path', 'params', 'query', 'fragment', Tag.name)
+
+    form_ajax_refs = {
+        'tags': {
+            'fields': (Tag.name,)
+        }
+    }
+
+    def __init__(self, session):
+        super(TargetAdmin, self).__init__(Target, session)
+
+
 class OrgAdmin(sqla.ModelView):
     column_display_pk = True
 
 
 class DepartmentAdmin(sqla.ModelView):
     column_display_pk = False
-    form_columns = ['org_id', 'desc', 'contact']
+    form_columns = ['org', 'desc', 'contact']
     column_searchable_list = ('desc', Organization.desc)
     column_filters = ('desc', 'org')
 
@@ -65,16 +79,22 @@ class DepartmentAdmin(sqla.ModelView):
         text=dict(label='Big Text', validators=[validators.required()])
     )
 
+    form_ajax_refs = {
+        'org': {
+            'fields': (Organization.desc,)
+        }
+    }
+
     def __init__(self, session):
         # Just call parent class with predefined model
         super(DepartmentAdmin, self).__init__(Department, session)
 
 
 class ConnectionAdmin(sqla.ModelView):
-    column_display_pk = True
+    column_display_pk = False
     form_columns = ['conn_type', 'url', 'port', 'answer', 'redirect', 'tags']
-    column_searchable_list = ('conn_type', 'url', 'answer', 'redirect')
-    column_filters = ('conn_type', 'url', 'port', 'answer', 'redirect')
+    column_searchable_list = ('conn_type', 'url', 'answer', 'redirect', 'ip')
+    column_filters = ('conn_type', 'url', 'port', 'answer', 'redirect', 'ip')
     
     # Define which fields should be preloaded by Ajax
     form_ajax_refs = {
@@ -89,7 +109,6 @@ class HeaderAdmin(sqla.ModelView):
 
 # Add admin functionality
 admin = Admin(app, name="Admin App Survey", url="/admin", base_template="layout-admin.html", template_mode="bootstrap3")
-#admin = Admin(app, name="Admin App Survey", url="/admin")
 
 # Add views
 admin.add_view(AppTypeAdmin(AppType, db_session))
@@ -99,3 +118,4 @@ admin.add_view(ConnectionAdmin(Connection, db_session))
 admin.add_view(HeaderAdmin(Header, db_session))
 admin.add_view(OrgAdmin(Organization, db_session))
 admin.add_view(DepartmentAdmin(db_session))
+admin.add_view(TargetAdmin(db_session))

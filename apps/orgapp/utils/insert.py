@@ -1,5 +1,5 @@
 from app.database import db_session as db, Base, engine
-from app.models import App, AppType, Organization, Department, Tag, Connection, Header 
+from app.models import App, Target, AppType, Organization, Department, Tag, Connection, Header 
 
 def TagInsert(json_data):
 	""" Inserts Tag objects into DB """
@@ -20,7 +20,7 @@ def ConnectionInsert(json_data):
 	for r in json_data:
 		tags = TagInsert(r['tags'])
 		conn = Connection(
-			id=int(r['id']), conn_type=r['conn_type'], url=r['url'],
+			id=int(r['id']), conn_type=r['conn_type'], url=r['url'], ip=r['ip'],
 			answer=r['answer'], redirect=r['redirect'], port=r['port'], tags=tags
 		)
 
@@ -103,6 +103,31 @@ def AppInsert(json_data):
 		print("[-] application: Insert %s ..." % r)
 		db.merge(app)
 		result.append(app)
+
+	db.commit()
+	return result
+
+def TargetInsert(json_data):
+	""" Insert Target objects into DB """
+	result = []
+	for r in json_data:
+		tags = TagInsert(r['tags'])
+		target = Target(
+			scheme = r['scheme'],
+			user = r['user'],
+			password = r['password'],
+			netloc = r['netloc'],
+			port = r['port'],
+			path = r['path'],
+			params = r['params'],
+			query = r['query'],
+			fragment = r['fragment'],
+			tags = tags
+		)
+
+		print("[-] target: Insert %s ..." % r)
+		db.merge(target)
+		result.append(target)
 
 	db.commit()
 	return result

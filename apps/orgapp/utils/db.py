@@ -2,12 +2,12 @@ import csv
 import json
 
 from app.database import db_session, Base, engine
-from app.models import App, AppType, Organization, Department, Tag, Connection, Header
+from app.models import App, Target, AppType, Organization, Department, Tag, Connection, Header
 from app.serializer import \
         TagSerializer, ConnectionSerializer, HeaderSerializer,\
         AppTypeSerializer, OrganizationSerializer, AppSerializer,\
-        DepartmentSerializer
-from utils.insert import AppTypeInsert, AppInsert, DepartmentInsert,\
+        DepartmentSerializer, TargetSerializer
+from utils.insert import AppTypeInsert, AppInsert, TargetInsert, DepartmentInsert,\
         OrganizationInsert, TagInsert, ConnectionInsert, HeaderInsert
 
 # Create table <-> models mapping:
@@ -46,7 +46,13 @@ table_models_map = {
     'header':       {
         'model': Header, 
         'serializer': HeaderSerializer,
-        'insert': HeaderInsert}
+        'insert': HeaderInsert
+    },
+    'target':       {
+        'model': Target,
+        'serializer': TargetSerializer,
+        'insert': TargetInsert
+    }
 }
 
 def get_csv_data(file_path):
@@ -134,10 +140,11 @@ def export_tables(output=None):
 
     if output:
         # Export tables to JSON
-        tables = ['department', 'organization', 'connection', 'tag', 'header', 'apptype', 'application']
+        tables = table_models_map.keys()
         for t in tables:
             print("Exporting %s ..." % t)
-            result = [i for i in table_models_map[t]['model'].query.all()]
+            
+            result = [i for i in db_session.query(table_models_map[t]['model']).all()]
             serialized = table_models_map[t]['serializer'](result, many=True)
 
             # Write to JSON file

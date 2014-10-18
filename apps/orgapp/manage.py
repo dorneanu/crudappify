@@ -78,16 +78,34 @@ def export(output=None):
     finally:
         print("[!] DB tables successfully exported to %s as JSON!" % output)
 
-@db_manager.option('-t', '--table', dest='table', help='Table where to insert data', required=True)
-@db_manager.option('-f', '--file', dest='jsonfile', help='JSON file to be imported', required=True)
-def insert(table, jsonfile):
+@db_manager.option('-t', '--table', dest='table', help='Table where to insert data')
+@db_manager.option('-f', '--file', dest='jsonfile', help='JSON file to be imported')
+@db_manager.option('-d', '--directory', dest="directory", help="Insert all JSON files from directory.")
+def insert(table=None, jsonfile=None, directory=None):
     """ Insert data from JSON file into table """
     from utils.db import insert_data
-    
-    try:
+    from os import walk
+    from os.path import basename, splitext, join
+
+    # Use file names as table names
+    if directory:
+        for (dirpath, dirnames, filenames) in walk(directory):
+            for f in filenames:
+                file_path = join(dirpath, f)
+                (table, suffix) = splitext(basename(file_path))
+
+                # Regard only JSON files
+                if suffix == ".json":
+                    insert_data(table, file_path)
+
+
+    # Insert file
+    elif jsonfile and table:
         insert_data(table, jsonfile)
-    finally:
         print("[!] Imported data from <%s> into <%s> table!" % (jsonfile, table))
+
+    else:
+        print("[!] Error! See --help")
 
     
 # Manager ---------------------------------------------------------------------
