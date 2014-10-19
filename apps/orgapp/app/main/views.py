@@ -1,6 +1,9 @@
-from flask import Blueprint, request, redirect, render_template, url_for
+import json
+import pandas as pd
+from flask import Blueprint, request, redirect, render_template, url_for, jsonify
 from flask.views import MethodView
-from app.models import App, Connection, Tag, AppType
+from app.models import App, Connection, Tag, AppType, Target
+from app.database import db_session, Base, engine
 
 apps = Blueprint('apps', __name__,)
 
@@ -39,7 +42,6 @@ def charts(table=None):
         return render_template('charts/app.html', apps=apps)
 
     elif table == "connections":
-        import json
         conns = Connection.query.all()
 
         # Generate json data
@@ -50,7 +52,27 @@ def charts(table=None):
         json_data = json.dumps(raw_data)
 
         return render_template('charts/connection.html', json_data=json_data)
-
     else:
         return "<p>ERROR</p>"
 
+@apps.route("/get/targets")
+def targets():
+    """ Returns targets """
+    tags = [t.name for t in Tag.query.all()]
+    tags_count = {}
+
+    targets = db_session.query(Target)
+    # Return tags count for all targets
+    for t in tags:
+        count = targets.filter(Target.tags.any(Tag.name.startswith(t))).count()
+        tags_count[t] = count
+        
+    # Transform to JSON
+    df = pd.DataFrame(pd.Series(tags_count))
+    df = df.reset_index()
+    df.columns=['label', 'value']
+    json_obj = df.to_dict(outtype="records")
+    json_dict = { "tags": json_obj, "discrete": [{ "key": "Cumulative Return", "values": json_obj }]}
+
+    return jsonify(json_dict)
+ 

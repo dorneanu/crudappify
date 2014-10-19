@@ -2,9 +2,11 @@ from flask import Blueprint
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext import admin
 from flask.ext.admin.contrib import sqla
-from flask.ext.admin import Admin
+from flask.ext.admin import Admin, BaseView, expose
 from flask.ext.admin.base import MenuLink
+from flask.ext.admin.babel import gettext, ngettext, lazy_gettext
 from flask.ext.admin.form import Select2TagsWidget, Select2Field, Select2TagsField
+from flask.ext.admin.actions import action
 from wtforms import validators, fields
 
 from app import app
@@ -13,19 +15,14 @@ from app.models import AppType, App, Target, Organization, Department, Connectio
 from app.models import conn_tags_table
 
 
-class CustomView(sqla.ModelView):
-    """ Customized admin interface """
-    list_template = "list.html"
-    create_template = "create.html"
-    edit_template = "edit.html"
-
-
 class AppTypeAdmin(sqla.ModelView):
+    list_template = "list.html"
     column_display_pk = True
     form_columns= ['id', 'desc']
 
 
 class AppAdmin(sqla.ModelView):
+    list_template = "list.html"
     column_display_pk = False
     form_columns = ['desc', 'app_type', 'version', 'environment', 'platform', 'department', 'date_added', 'tags', 'url']
 
@@ -54,6 +51,8 @@ class AppAdmin(sqla.ModelView):
 
 
 class TargetAdmin(sqla.ModelView):
+    list_template = "list.html"
+
     column_filters = ('scheme', 'user', 'password', 'netloc', 'port', 'path', 'params', 'query', 'fragment', 'comments')
     column_searchable_list = ('scheme', 'user', 'password', 'netloc', 'path', 'params', 'query', 'fragment', 'comments', Tag.name)
 
@@ -63,15 +62,21 @@ class TargetAdmin(sqla.ModelView):
         }
     }
 
+    @expose("/export")
+    def action_export(self):
+        return '<p>Not implemented yet</p>'
+
     def __init__(self, session):
         super(TargetAdmin, self).__init__(Target, session)
 
 
 class OrgAdmin(sqla.ModelView):
+    list_template = "list.html"
     column_display_pk = True
 
 
 class DepartmentAdmin(sqla.ModelView):
+    list_template = "list.html"
     column_display_pk = False
     form_columns = ['org', 'desc', 'contact']
     column_searchable_list = ('desc', Organization.desc)
@@ -93,6 +98,7 @@ class DepartmentAdmin(sqla.ModelView):
 
 
 class ConnectionAdmin(sqla.ModelView):
+    list_template = "list.html"
     column_display_pk = False
     form_columns = ['conn_type', 'url', 'port', 'answer', 'redirect', 'tags']
     column_searchable_list = ('conn_type', 'url', 'answer', 'redirect', 'ip', Tag.name)
@@ -107,13 +113,14 @@ class ConnectionAdmin(sqla.ModelView):
 
 
 class HeaderAdmin(sqla.ModelView):
+    list_template = "list.html"
     form_columns = ['conn_id', 'header', 'value']
 
 
 # Add admin functionality
 admin = Admin(app, name="Admin App Survey", url="/admin", base_template="layout-admin.html", template_mode="bootstrap3")
 
-# Add views
+# Add models views
 admin.add_view(AppTypeAdmin(AppType, db_session))
 admin.add_view(sqla.ModelView(Tag, db_session))
 admin.add_view(AppAdmin(db_session))
@@ -122,3 +129,4 @@ admin.add_view(HeaderAdmin(Header, db_session))
 admin.add_view(OrgAdmin(Organization, db_session))
 admin.add_view(DepartmentAdmin(db_session))
 admin.add_view(TargetAdmin(db_session))
+
