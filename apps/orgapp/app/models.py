@@ -7,6 +7,7 @@ from flask.ext.admin.contrib import sqla
 import sqlalchemy as sql
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy.ext.associationproxy import association_proxy
 
 # Own DB
 from app.database import Base
@@ -74,6 +75,7 @@ class App(Base):
 class Target(Base):
     """ Table of targets """
     __tablename__ = "target"
+    __table_args__ = (sql.UniqueConstraint('scheme', 'user', 'password', 'netloc', 'port', 'path', name='unique_target'),)
 
     id = sql.Column(sql.Integer, primary_key=True)
     scheme = sql.Column(sql.Text)
@@ -85,6 +87,7 @@ class Target(Base):
     params = sql.Column(sql.Text)
     query = sql.Column(sql.Text)
     fragment = sql.Column(sql.Text)
+    comments = sql.Column(sql.Text)
 
     tags = relationship('Tag', secondary=target_tags_table)
 
@@ -140,7 +143,9 @@ class Connection(Base):
     port = sql.Column(sql.Integer)
     answer = sql.Column(sql.String(50))
     redirect = sql.Column(sql.Text)
-    tags = relationship('Tag', secondary=conn_tags_table)
+    tags = relationship('Tag', secondary=lambda: conn_tags_table)
+
+    tag_list = association_proxy('tags', 'name')
 
     def __unicode__(self):
         return "%d -> %s" % (self.id, self.url)

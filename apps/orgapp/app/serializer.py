@@ -48,4 +48,4 @@ class AppSerializer(Serializer):
 class TargetSerializer(Serializer):
 	tags = fields.Nested(TagSerializer, many=True)
 	class Meta :
-		fields = ('id', 'scheme', 'user', 'password', 'netloc', 'port', 'path', 'params', 'query', 'fragment', 'tags')
+		fields = ('id', 'scheme', 'user', 'password', 'netloc', 'port', 'path', 'params', 'query', 'fragment', 'comments', 'tags')

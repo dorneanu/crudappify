@@ -4,11 +4,13 @@ from flask.ext import admin
 from flask.ext.admin.contrib import sqla
 from flask.ext.admin import Admin
 from flask.ext.admin.base import MenuLink
-from wtforms import validators
+from flask.ext.admin.form import Select2TagsWidget, Select2Field, Select2TagsField
+from wtforms import validators, fields
 
 from app import app
 from app.database import db_session
 from app.models import AppType, App, Target, Organization, Department, Connection, Header, Tag
+from app.models import conn_tags_table
 
 
 class CustomView(sqla.ModelView):
@@ -52,8 +54,8 @@ class AppAdmin(sqla.ModelView):
 
 
 class TargetAdmin(sqla.ModelView):
-    column_filters = ('scheme', 'user', 'password', 'netloc', 'port', 'path', 'params', 'query', 'fragment')
-    column_searchable_list = ('scheme', 'user', 'password', 'netloc', 'path', 'params', 'query', 'fragment', Tag.name)
+    column_filters = ('scheme', 'user', 'password', 'netloc', 'port', 'path', 'params', 'query', 'fragment', 'comments')
+    column_searchable_list = ('scheme', 'user', 'password', 'netloc', 'path', 'params', 'query', 'fragment', 'comments', Tag.name)
 
     form_ajax_refs = {
         'tags': {
@@ -93,15 +95,16 @@ class DepartmentAdmin(sqla.ModelView):
 class ConnectionAdmin(sqla.ModelView):
     column_display_pk = False
     form_columns = ['conn_type', 'url', 'port', 'answer', 'redirect', 'tags']
-    column_searchable_list = ('conn_type', 'url', 'answer', 'redirect', 'ip')
-    column_filters = ('conn_type', 'url', 'port', 'answer', 'redirect', 'ip')
-    
+    column_searchable_list = ('conn_type', 'url', 'answer', 'redirect', 'ip', Tag.name)
+    column_filters = ('conn_type', 'url', 'port', 'answer', 'redirect', 'ip', Tag.name)
+
     # Define which fields should be preloaded by Ajax
     form_ajax_refs = {
         'tags': {
             'fields': (Tag.name,)
         }
     }
+
 
 class HeaderAdmin(sqla.ModelView):
     form_columns = ['conn_id', 'header', 'value']
