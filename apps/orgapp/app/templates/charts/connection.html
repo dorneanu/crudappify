@@ -11,7 +11,7 @@
 		<div class="col-lg-6">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					Target port
+					# Targets per Tags (pie chart)
 				</div>
 				<div class="panel-body">
 					<div id="pie_chart">
@@ -25,10 +25,10 @@
     	<div class="col-lg-6">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					Connections per port
+					# Targets per Tags (discrete bar chart)
 				</div>
 				<div class="panel-body">
-					<div id="bar_chart">
+					<div id="discrete_bar_chart">
 			  		</div>
 			  	</div>
 	    	</div>
@@ -51,21 +51,26 @@
     	<!-- /.col-lg-12-->
     </div>
     <!-- /.row -->
+
+    <div class="row">
+		<div class="col-lg-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					Target port
+				</div>
+				<div class="panel-body">
+					<div id="bar_chart">
+			  		</div>
+			  	</div>
+	    	</div>
+	    	<!-- /.panel -->
+    	</div>
+    	<!-- /.col-lg-6 -->
+    </div>
+    <!-- /.row -->
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript">
-	var container = '#pie_chart'
-    var data  = JSON.parse({{ json_data|tojson|safe }});
-    var width = $(container).parent().width();
-    var svg = dimple.newSvg(container, width, 400);
-
-	var myChart = new dimple.chart(svg, data);
-    myChart.addMeasureAxis("p", "url");
-    myChart.addSeries("port", dimple.plot.pie);
-    myChart.draw();
-</script>
-
 <script type="text/javascript">
 	var container = '#bar_chart'
     var data  = JSON.parse({{ json_data|tojson|safe }});
@@ -80,15 +85,55 @@
 </script>
 
 <script type="text/javascript">
-	var container = '#bubble_chart'
-    var data  = JSON.parse({{ json_data|tojson|safe }});
-    var width = $(container).parent().width();
-    var svg = dimple.newSvg(container, width, 400);
+// Get JSON data
+var targets_data = [];
+$.getJSON( "/get/targets", function( data ) {
 
-	var myChart = new dimple.chart(svg, data);
-    myChart.addCategoryAxis("x", 'answer');
-    myChart.addMeasureAxis("y", "port");
-    myChart.addSeries("port", dimple.plot.bubble);
-    myChart.draw();	
+	//Regular pie chart example
+	nv.addGraph(function() {
+	  var container= "#pie_chart"
+	  var width = $(container).parent().width();
+	  var svg = d3.select(container).append("svg")
+		.attr("width", width)
+		.attr("height", 600);
+
+	  var chart = nv.models.pieChart()
+	      .x(function(d) { return d.label })
+	      .y(function(d) { return d.value })
+	      .showLabels(true);
+
+	  d3.select(container +  " svg")
+	      .datum(data['tags'])
+	      .transition().duration(350)
+	      .call(chart);
+
+	  return chart;
+	});
+
+	// Discrete bar chart
+	nv.addGraph(function() {
+	  var container = "#discrete_bar_chart"
+	  var width = $(container).parent().width();
+	  var svg = d3.select(container).append("svg")
+		.attr("width", width)
+		.attr("height", 600);	
+
+	  var chart = nv.models.discreteBarChart()
+	      .x(function(d) { return d.label })    //Specify the data accessors.
+	      .y(function(d) { return d.value })
+	      .staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
+	      .tooltips(true)         //Don't show tooltips
+	      .showValues(true)       //...instead, show the bar value right on top of each bar.
+	      .transitionDuration(350);
+
+	  d3.select(container +  " svg")
+	      .datum(data['discrete'])
+	      .call(chart);
+
+	  nv.utils.windowResize(chart.update);
+
+	  return chart;
+	});
+});
 </script>
 {% endblock %}

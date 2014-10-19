@@ -24,6 +24,9 @@
   <!-- Bootstrap Glyphicons -->
   <link href="{{ url_for('static', filename='css/bootstrap-glyphicons.css') }}" rel="stylesheet">
 
+  <!-- nvd3 css -->
+  <link href="{{ url_for('static', filename='css/plugins/nvd3/nv.d3.min.css') }}" rel="stylesheet">
+
   <!-- Custom CSS settings -->
   <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
 
@@ -63,8 +66,12 @@
 
     <!-- D3 -->
     <script src="{{ url_for('static', filename='js/plugins/d3/d3.v3.min.js') }}"></script>
+
     <!-- DimpleJS -->
     <script src="{{ url_for('static', filename='js/plugins/dimplejs/dimple.v2.1.0.min.js') }}"></script>
+
+    <!-- nvd3 -->
+    <script src="{{ url_for('static', filename='js/plugins/nvd3/nv.d3.min.js') }}"></script>
 
     {% block scripts %}
     {% endblock %}
