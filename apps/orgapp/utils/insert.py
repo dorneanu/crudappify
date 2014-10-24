@@ -1,5 +1,5 @@
 from app.database import db_session as db, Base, engine
-from app.models import App, Target, AppType, Organization, Department, Tag, Connection, Header 
+from app.models import App, AppBundle, Target, AppType, Organization, Department, Tag, Connection, Header 
 
 def TagInsert(json_data):
 	""" Inserts Tag objects into DB """
@@ -18,15 +18,17 @@ def ConnectionInsert(json_data):
 	""" Inserts Connection objects into DB """
 	result = []
 	for r in json_data:
-		tags = TagInsert(r['tags'])
-		conn = Connection(
-			id=int(r['id']), conn_type=r['conn_type'], url=r['url'], ip=r['ip'],
-			answer=r['answer'], redirect=r['redirect'], port=r['port'], tags=tags
-		)
+		# Insert only valid connection
+		if r['id'] is not None:
+			tags = TagInsert(r['tags'])
+			conn = Connection(
+				id=int(r['id']), conn_type=r['conn_type'], url=r['url'], ip=r['ip'],
+				answer=r['answer'], redirect=r['redirect'], port=r['port'], tags=tags
+			)
 
-		print("[-] connection: Insert %s ..." % r)
-		db.merge(conn)
-		result.append(conn)
+			print("[-] connection: Insert %s ..." % r)
+			db.merge(conn)
+			result.append(conn)
 
 	db.commit()
 	return result
@@ -62,7 +64,14 @@ def DepartmentInsert(json_data):
 	""" Insert Department objects into DB """
 	result = []
 	for r in json_data:
-		org = OrganizationInsert([r['org']])[0]			# one-to-many relationship
+		_org = OrganizationInsert([r['org']])		# one-to-many relationship
+
+		# Set organization
+		if len(_org) > 0:
+			org = _org[0]
+		else:
+			org = None
+
 		dpt = Department(id=int(r['id']), org=org, desc=r['desc'], contact=r['contact'])
 
 		print("[-] department: Insert %s ..." % r)
@@ -85,19 +94,44 @@ def AppTypeInsert(json_data):
 	db.commit()
 	return result
 
+def AppBundleInsert(json_data):
+	""" A bundle consists of multiple apps """
+	result = []
+	for r in json_data:
+		print(r)
+		# Insert bundle
+		appbundle = AppBundle (
+			id=int(r['id']), name=r['name'], desc=r['desc'], contact=r['contact']
+		)
+
+		print("[-] bundle: Insert %s ..." % r)
+		db.merge(appbundle)
+		result.append(appbundle)
+
+	db.commit()
+	return result
+
 def AppInsert(json_data):
 	""" Insert App objects into DB """
 	result = []
 	for r in json_data:
 		apptype = AppTypeInsert([r['app_type']])		# one-to-many relationship
-		dpt = DepartmentInsert([r['department']])[0]	# one-to-many relationship
+		bundle = AppBundleInsert(r['bundle'])
+
+		if r['department']['id'] is not None:
+			dpt = DepartmentInsert([r['department']]) 		# one-to-many relationship
+		else:
+			dpt = None
+
+		# Insert tags
 		tags = TagInsert(r['tags'])
 
 		app = App(
 			app_id=int(r['app_id']), app_type=apptype[0], url=r['url'],
-			desc=r['desc'], date_added=r['date_added'], department=dpt,
+			desc=r['desc'], date_added=r['date_added'], contact=r['contact'],
 			version=r['version'], environment=r['environment'], platform=r['platform'],
-			tags=tags
+			status=r['status'], last_scan=r['last_scan'], reported_to_dpt=r['reported_to_dpt'], 
+			open_issues=r['open_issues'], tags=tags, bundle=bundle
 		)
 
 		print("[-] application: Insert %s ..." % r)
@@ -111,7 +145,17 @@ def TargetInsert(json_data):
 	""" Insert Target objects into DB """
 	result = []
 	for r in json_data:
+		print("connection: %s" % r['connection'])
 		tags = TagInsert(r['tags'])
+		conn = ConnectionInsert([r['connection']]) 
+		
+		# Check if any valid connection
+		if conn:
+			connection = conn[0]			# Take first value
+		else:
+			connection = None
+
+		# Create new target object
 		target = Target(
 			scheme = r['scheme'],
 			user = r['user'],
@@ -123,7 +167,8 @@ def TargetInsert(json_data):
 			query = r['query'],
 			fragment = r['fragment'],
 			comments = r['comments'],
-			tags = tags
+			tags = tags,
+			connection = connection
 		)
 
 		print("[-] target: Insert %s ..." % r)

@@ -11,23 +11,30 @@ from wtforms import validators, fields
 
 from app import app
 from app.database import db_session
-from app.models import AppType, App, Target, Organization, Department, Connection, Header, Tag
+from app.models import AppType, App, AppBundle, Target, Organization, Department, Connection, Header, Tag
 from app.models import conn_tags_table
 
 
 class AppTypeAdmin(sqla.ModelView):
     list_template = "list.html"
-    column_display_pk = True
-    form_columns= ['id', 'desc']
+    column_display_pk = False
+    form_columns= ['desc']
 
 
 class AppAdmin(sqla.ModelView):
     list_template = "list.html"
     column_display_pk = False
-    form_columns = ['desc', 'app_type', 'version', 'environment', 'platform', 'department', 'date_added', 'tags', 'url']
+    form_columns = [
+        'desc', 'app_type', 'bundle',
+        'version', 'environment', 'platform', 
+        'department', 'contact', 
+        'date_added', 
+        'status', 'last_scan', 'reported_to_dpt', 'open_issues',
+        'tags', 'url'
+    ]
 
     # Add here list of columns where to search
-    column_searchable_list = ('desc', 'url', 'version', 'environment', 'platform', Tag.name)
+    column_searchable_list = ('desc', 'url', 'version', 'environment', 'platform', 'contact', AppBundle.name, Tag.name)
 
     # Define here filters
     column_filters = ('desc', 'department', 'app_type', 'url', 'app_id', 'version', 'environment', 'platform', 'date_added', 'tags')
@@ -42,12 +49,19 @@ class AppAdmin(sqla.ModelView):
         },
         'department': {
             'fields': (Department.desc,)
+        },
+        'bundle':   {
+            'fields': (AppBundle.name, AppBundle.desc,)
         }
     }
 
     def __init__(self, session):
         # Just call parent class with predefined model
         super(AppAdmin, self).__init__(App, session)
+
+
+class AppBundleAdmin(sqla.ModelView):
+    list_template = "list.html"
 
 
 class TargetAdmin(sqla.ModelView):
@@ -65,6 +79,12 @@ class TargetAdmin(sqla.ModelView):
     @expose("/export")
     def action_export(self):
         return '<p>Not implemented yet</p>'
+
+    @action('scan', 'Scan', 'Are you sure you want to scan the selected targets')
+    def action_scan(self, ids):
+        for id in ids:
+            target = db_session.query(Target).filter_by(id=id).one()
+            
 
     def __init__(self, session):
         super(TargetAdmin, self).__init__(Target, session)
@@ -124,6 +144,7 @@ admin = Admin(app, name="Admin App Survey", url="/admin", base_template="layout-
 admin.add_view(AppTypeAdmin(AppType, db_session))
 admin.add_view(sqla.ModelView(Tag, db_session))
 admin.add_view(AppAdmin(db_session))
+admin.add_view(AppBundleAdmin(AppBundle, db_session))
 admin.add_view(ConnectionAdmin(Connection, db_session))
 admin.add_view(HeaderAdmin(Header, db_session))
 admin.add_view(OrgAdmin(Organization, db_session))

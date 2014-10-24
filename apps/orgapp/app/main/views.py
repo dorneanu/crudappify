@@ -1,9 +1,11 @@
 import json
 import pandas as pd
+import app.serializer as srlz
 from flask import Blueprint, request, redirect, render_template, url_for, jsonify
 from flask.views import MethodView
 from app.models import App, Connection, Tag, AppType, Target
 from app.database import db_session, Base, engine
+
 
 apps = Blueprint('apps', __name__,)
 
@@ -39,19 +41,10 @@ def charts(table=None):
     """ Create some table specific charts """
     if table == "apps":
         apps = App.query.all()
-        return render_template('charts/app.html', apps=apps)
+        return render_template('charts/app.html')
 
-    elif table == "connections":
-        conns = Connection.query.all()
-
-        # Generate json data
-        raw_data = [
-            {'url' : c.url, 'port' : c.port, 'answer' : c.answer}
-            for c in conns
-        ]
-        json_data = json.dumps(raw_data)
-
-        return render_template('charts/connection.html', json_data=json_data)
+    elif table == "targets":
+        return render_template('charts/target.html')
     else:
         return "<p>ERROR</p>"
 
@@ -87,16 +80,34 @@ def targets(mode=None):
 
     # Return records
     elif mode == "table":
-        df = pd.DataFrame([[t.scheme, t.netloc, t.port, t.path, t.comments] for t in targets.all()], 
-                    columns=["scheme", "netloc", "port", "path", "comments"])
-        json_obj = df.to_dict(outtype="records")
-        json_dict = { "targets" : json_obj}
+        serialized = srlz.TargetSerializer(targets.all(), many=True);
+        json_dict = { "data" : serialized.data}
         
         return jsonify(json_dict)
 
     # No mode specified
     else:
         return 'No mode specified'
+        
+
+@apps.route('/api/get/apps/<mode>')
+def applications(mode=None):
+    """ Returns apps """
+    applications = db_session.query(App)
+
+    # Return tags
+    if mode == "table":
+        serialized = srlz.AppSerializer(applications.all(), many=True);
+        json_dict = {'data': serialized.data}
+
+        return jsonify(json_dict)
+
+    # No mode specified
+    else:
+        return 'No mode specified'
+
+
+
 
 
  

@@ -2,12 +2,12 @@ import csv
 import json
 
 from app.database import db_session, Base, engine
-from app.models import App, Target, AppType, Organization, Department, Tag, Connection, Header
+from app.models import App, AppBundle, Target, AppType, Organization, Department, Tag, Connection, Header
 from app.serializer import \
         TagSerializer, ConnectionSerializer, HeaderSerializer,\
-        AppTypeSerializer, OrganizationSerializer, AppSerializer,\
+        AppTypeSerializer, OrganizationSerializer, AppSerializer, AppBundleSerializer,\
         DepartmentSerializer, TargetSerializer
-from utils.insert import AppTypeInsert, AppInsert, TargetInsert, DepartmentInsert,\
+from utils.insert import AppTypeInsert, AppInsert, AppBundleInsert, TargetInsert, DepartmentInsert,\
         OrganizationInsert, TagInsert, ConnectionInsert, HeaderInsert
 
 # Create table <-> models mapping:
@@ -22,6 +22,11 @@ table_models_map = {
         'model': App, 
         'serializer': AppSerializer,
         'insert': AppInsert
+    },
+    'appbundle':    {
+        'model': AppBundle,
+        'serializer': AppBundleSerializer,
+        'insert': AppBundleInsert
     },
     'organization': {
         'model': Organization, 
