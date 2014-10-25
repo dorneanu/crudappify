@@ -135,6 +135,31 @@ class Target(Base):
 
     tags = relationship('Tag', secondary=target_tags_table)
 
+    def to_string(self):
+        """ Return object as string """
+        url = self.scheme
+
+        # Add user/password (if any)
+        if self.user:
+            if self.password:
+                url += "://%s@%s" % (self.user, self.password)
+        else:
+            url += "://"
+
+        # Add netloc
+        url += self.netloc
+
+        # Add port
+        if self.port:
+            url += ":%d" % self.port
+        else:
+            url += ":80"        # default port
+
+        # Add path,
+        url += "%s" % self.path
+
+        return url
+
     def __unicode__(self):
         return self.netloc
 

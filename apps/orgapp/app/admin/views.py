@@ -80,10 +80,27 @@ class TargetAdmin(sqla.ModelView):
     def action_export(self):
         return '<p>Not implemented yet</p>'
 
-    @action('scan', 'Scan', 'Are you sure you want to scan the selected targets')
+    @action('scan', 'Scan')
     def action_scan(self, ids):
+        import json
+        from utils.connection import send_request
+        t = []
+        data = []
         for id in ids:
+            headers = []
             target = db_session.query(Target).filter_by(id=id).one()
+            t.append(target.to_string())
+
+            # Connect to target 
+            response = send_request(target.to_string(), t)
+            
+            # Collect headers
+            for r in response.headers:
+                headers.append({'header': r, 'value': response.headers[r]})
+
+            data.append({'id': id, 'data': headers})
+
+        return json.dumps(data, indent=2)
             
 
     def __init__(self, session):

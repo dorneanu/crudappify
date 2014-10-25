@@ -69,3 +69,23 @@ function addDiscreteChart(items, container) {
       return chart;
     });
 }
+
+// Filter global
+function fnFilterGlobal (dt_table) {
+    $(dt_table).dataTable().fnFilter(
+        $("#global_filter").val(),
+        null,
+        $("#global_regex")[0].checked,
+        $("#global_smart")[0].checked
+    );
+}
+
+// Filter by certain column
+function fnFilterColumn (dt_table, i) {
+    $(dt_table).dataTable().fnFilter(
+        $("#col"+(i)+"_filter").val(),
+        i,
+        $("#col"+(i)+"_regex")[0].checked,
+        $("#col"+(i)+"_smart")[0].checked
+    );
+}

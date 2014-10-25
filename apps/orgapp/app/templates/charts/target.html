@@ -62,8 +62,70 @@
                         </div>
                         <div class="tab-pane fade in" id="datatables">
                             <h4>DataTables</h4>
+                            <div class="panel-group" id="accordion">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Filters</a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in">
+                                        <div class="panel-body">
+                                            <table cellpadding="0" cellspacing="0" border="0" class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Target</th>
+                                            <th>Filter text</th>
+                                            <th>Treat as regex</th>
+                                            <th>Use smart filter</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr id="filter_global">
+                                                <td>Global filtering</td>
+                                                <td><input type="text"     name="global_filter" id="global_filter"></td>
+                                                <td><input type="checkbox" name="global_regex"  id="global_regex" ></td>
+                                                <td><input type="checkbox" name="global_smart"  id="global_smart"  checked></td>
+                                            </tr>
+                                            <tr id="filter_col1">
+                                                <td>Scheme</td>
+                                                <td><input type="text"     name="col1_filter" id="col1_filter"></td>
+                                                <td><input type="checkbox" name="col1_regex"  id="col1_regex"></td>
+                                                <td><input type="checkbox" name="col1_smart"  id="col1_smart" checked></td>
+                                            </tr>
+                                            <tr id="filter_col2">
+                                                <td>Netloc</td>
+                                                <td><input type="text"     name="col2_filter" id="col2_filter"></td>
+                                                <td><input type="checkbox" name="col2_regex"  id="col2_regex"></td>
+                                                <td><input type="checkbox" name="col2_smart"  id="col2_smart" checked></td>
+                                            </tr>
+                                            <tr id="filter_col3">
+                                                <td>Port</td>
+                                                <td><input type="text"     name="col3_filter" id="col3_filter"></td>
+                                                <td><input type="checkbox" name="col3_regex"  id="col3_regex"></td>
+                                                <td><input type="checkbox" name="col3_smart"  id="col3_smart" checked></td>
+                                            </tr>
+                                            <tr id="filter_col4">
+                                                <td>Query</td>
+                                                <td><input type="text"     name="col4_filter" id="col4_filter"></td>
+                                                <td><input type="checkbox" name="col4_regex"  id="col4_regex"></td>
+                                                <td><input type="checkbox" name="col4_smart"  id="col4_smart" checked></td>
+                                            </tr>
+                                            <tr id="filter_col5">
+                                                <td>Tags</td>
+                                                <td><input type="text"     name="col5_filter" id="col5_filter"></td>
+                                                <td><input type="checkbox" name="col5_regex"  id="col5_regex"></td>
+                                                <td><input type="checkbox" name="col5_smart"  id="col5_smart" checked></td>
+                                            </tr>
+                                        </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div>
                                 <table id="table-targets" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -155,6 +217,7 @@ $.getJSON( "/api/get/targets/table", function( data ) {
     // Create DataTables
     var table = $('#table-targets').DataTable( {
         "bProcessing": true,
+        "sDom": '<"top">rt<"bottom"flp><"clear">',
         "aaData": data['data'],
         "aoColumns": [
             {
@@ -165,14 +228,47 @@ $.getJSON( "/api/get/targets/table", function( data ) {
                 "defaultContent": '<span class="glyphicon glyphicon-th-list"></span>',
                 "width":           "20px"
             },
-            { "sTitle": "Scheme",   "mDataProp": "scheme" },
-            { "sTitle": "Netloc",   "mDataProp": "netloc" },
-            { "sTitle": "Port",   "mDataProp": "port" },
-            { "sTitle": "Query", "mDataProp": "query"},
-            { "sTitle": "Tags",  "mDataProp": "comments" }
+            { "type": "text", "sTitle": "Scheme",   "mDataProp": "scheme" , "bRegex": true },
+            { "type": "text", "sTitle": "Netloc",   "mDataProp": "netloc" , "bRegex": true},
+            { "type": "text", "sTitle": "Port",   "mDataProp": "port" , "bRegex": true},
+            { "type": "text", "sTitle": "Query", "mDataProp": "query", "bRegex": true},
+            { "type": "text", "sTitle": "Tags",  "mDataProp": "comments" , "bRegex": true}
         ]
     });
 
+
+    // Activate filtering
+
+    // Global
+    //$("#global_filter").keyup( fnFilterGlobal("table-targets") );
+    //$("#global_regex").click( fnFilterGlobal("#table-targets") );
+    //$("#global_smart").click( fnFilterGlobal("#table-targets") );
+    
+    // Scheme
+    $("#col1_filter").keyup( function() { fnFilterColumn("#table-targets", 1); } );
+    $("#col1_regex").click(  function() { fnFilterColumn("#table-targets", 1 ); } );
+    $("#col1_smart").click(  function() { fnFilterColumn("#table-targets", 1 ); } );
+
+    // Netloc
+    $("#col2_filter").keyup( function() { fnFilterColumn("#table-targets", 2); } );
+    $("#col2_regex").click(  function() { fnFilterColumn("#table-targets", 2 ); } );
+    $("#col2_smart").click(  function() { fnFilterColumn("#table-targets", 2 ); } );
+
+    // Port
+    $("#col3_filter").keyup( function() { fnFilterColumn("#table-targets", 3); } );
+    $("#col3_regex").click(  function() { fnFilterColumn("#table-targets", 3 ); } );
+    $("#col3_smart").click(  function() { fnFilterColumn("#table-targets", 3 ); } );
+
+    // Query
+    $("#col4_filter").keyup( function() { fnFilterColumn("#table-targets", 4); } );
+    $("#col4_regex").click(  function() { fnFilterColumn("#table-targets", 4 ); } );
+    $("#col4_smart").click(  function() { fnFilterColumn("#table-targets", 4 ); } );
+
+    // Tags
+    $("#col5_filter").keyup( function() { fnFilterColumn("#table-targets", 5); } );
+    $("#col5_regex").click(  function() { fnFilterColumn("#table-targets", 5 ); } );
+    $("#col5_smart").click(  function() { fnFilterColumn("#table-targets", 5 ); } );
+    
     // Add event listener for opening and closing details
     $('#table-targets tbody').on('click', 'td', function () {
         var tr = $(this).closest('tr');
