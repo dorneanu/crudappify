@@ -14,28 +14,6 @@ apps = Blueprint('apps', __name__,)
 def index():
     return render_template("index.html")
 
-@apps.route("/list/<table>")
-def list(table=None):
-    """ List specified table """
-    if table == "apps":
-        apps = App.query.all()
-        return render_template('list/app.html', apps=apps)
-
-    elif table == "apptypes":
-        apptypes = AppType.query.all()
-        return render_template('list/apptype.html', types=apptypes)
-
-    elif table == "connections":
-        conns = Connection.query.all()
-        return render_template('list/connection.html', connections=conns)
-
-    elif table == "tags":
-        tags = Tag.query.all()
-        return render_template('list/tag.html', tags=tags)
-
-    else:
-        return "<p>ERROR</p>"
-
 @apps.route("/charts/<table>")
 def charts(table=None):
     """ Create some table specific charts """
