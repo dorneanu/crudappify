@@ -173,7 +173,7 @@ $.getJSON( "/api/get/apps/table", function( data ) {
         return '<table class="table">'+
             '<tr>'+
                 '<td>ID:</td>'+
-                '<td>'+d.app_id+'</td>'+
+                '<td><a href="/admin/app/edit/?url=/admin/app/&id='+d.app_id+'">'+d.app_id+'</a></td>'+
             '</tr>'+
             '<tr>'+
                 '<td>Application Type:</td>'+

@@ -66,7 +66,7 @@
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Filters</a>
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Toggle Filters</a>
                                         </h4>
                                     </div>
                                     <div id="collapseOne" class="panel-collapse collapse in">
@@ -170,7 +170,7 @@ $.getJSON( "/api/get/targets/table", function( data ) {
         return '<table class="table">'+
             '<tr>'+
                 '<td>ID:</td>'+
-                '<td>'+d.id+'</td>'+
+                '<td><a href="/admin/target/edit/?url=/admin%/target/&id='+d.id+'">'+d.id+'</a></td>'+
             '</tr>'+
             '<tr>'+
                 '<td>Tags:</td>'+
@@ -183,7 +183,7 @@ $.getJSON( "/api/get/targets/table", function( data ) {
                     '<table class="table">'+
                         '<tr>'+
                             '<td>ID:</td>'+
-                            '<td>'+connection.id+'</td>'+
+                            '<td><a href="/admin/connection/edit/?url=/admin/connection/&id='+connection.id+'">'+connection.id+'</a></td>'+
                         '</tr>'+
                         '<tr>'+
                             '<td>Conn Type:</td>'+
