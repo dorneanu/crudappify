@@ -80,7 +80,7 @@ function fnFilterGlobal (dt_table) {
     );
 }
 
-// Filter by certain column
+// Filter by certain columns
 function fnFilterColumn (dt_table, i) {
     $(dt_table).dataTable().fnFilter(
         $("#col"+(i)+"_filter").val(),

@@ -179,3 +179,8 @@ def TargetInsert(json_data):
 	return result
 
 
+def DNSInsert(json_data):
+	# TODO
+	pass
+
+

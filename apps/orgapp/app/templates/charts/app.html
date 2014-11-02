@@ -19,7 +19,7 @@
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#discrete" id="tab-discrete-chart" data-toggle="tab">Charts</a>
                         </li>
-                        <li><a href="#datatables-table" data-toggle="tab">Table</a>
+                        <li><a href="#datatables-table" id="tab-datatables" data-toggle="tab">Table</a>
                         </li>
                     </ul>
 
@@ -331,6 +331,9 @@ $.getJSON( "/api/get/apps/table", function( data ) {
     addDiscreteChart(get_status_data(data['data']), "#discrete_bar_chart_status");
     addDiscreteChart(get_platform_data(data['data']),"#discrete_bar_chart_platform")
     addDiscreteChart(get_apptype_data(data['data']),"#discrete_bar_chart_apptype")
+
+    // Add total number of items
+    $('#tab-datatables').text("Applications (" + data['data'].length+ ")");
 });
 
 </script>

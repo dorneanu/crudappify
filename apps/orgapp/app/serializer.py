@@ -67,3 +67,7 @@ class AppSerializer(Serializer):
     tags = fields.Nested(TagSerializer, many=True)
     bundle = fields.Nested('AppBundleSerializer', only=('id', 'name','desc', 'contact'), many=True)
 
+class DNSSerializer(Serializer):
+    class Meta:
+        fields = ('id', 'domain', 'record', 'value')    
+

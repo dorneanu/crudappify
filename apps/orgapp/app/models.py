@@ -234,6 +234,15 @@ class Header(Base):
     value = sql.Column(sql.Text)
 
 
+class DNS(Base):
+    __tablename__  = "dns"
+
+    id = sql.Column(sql.Integer, primary_key=True)
+    domain = sql.Column(sql.Text)
+    record = sql.Column(sql.Text)
+    value = sql.Column(sql.Text)
+
+
 class Tag(Base):
     """ Table for tags """
     __tablename__ = "tag"

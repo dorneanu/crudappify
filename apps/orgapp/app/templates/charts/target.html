@@ -157,6 +157,7 @@ $.getJSON( "/api/get/targets/tags", function( data ) {
 /* Init Bootstrap Tables */
 $.getJSON( "/api/get/targets/table", function( data ) {
 
+
     function format ( d ) {
         // Add tags
         var tags = [];
@@ -286,6 +287,9 @@ $.getJSON( "/api/get/targets/table", function( data ) {
             tr.addClass('shown');
         }
     });
+
+    // Add total number of items
+    $('#tab-datatables').text("Targets (" + data['data'].length+ ")");
 });
 </script>
 {% endblock %}
