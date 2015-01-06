@@ -1,5 +1,5 @@
 from app.database import db_session as db, Base, engine
-from app.models import App, AppBundle, Target, AppType, Organization, Department, Tag, Connection, Header 
+from app.models import App, AppBundle, Target, AppType, Organization, Department, Tag, Connection, Header
 
 def TagInsert(json_data):
 	""" Inserts Tag objects into DB """
@@ -119,7 +119,7 @@ def AppInsert(json_data):
 		bundle = AppBundleInsert(r['bundle'])
 
 		if r['department']['id'] is not None:
-			dpt = DepartmentInsert([r['department']]) 		# one-to-many relationship
+			dpt = DepartmentInsert([r['department']])   	# one-to-many relationship
 		else:
 			dpt = None
 
@@ -127,11 +127,11 @@ def AppInsert(json_data):
 		tags = TagInsert(r['tags'])
 
 		app = App(
-			app_id=int(r['app_id']), app_type=apptype[0], url=r['url'],
-			desc=r['desc'], date_added=r['date_added'], contact=r['contact'],
+			app_id=int(r['app_id']), app_type=apptype[0], app_name=r['app_name'], url=r['url'],
+                        desc=r['desc'], date_added=r['date_added'], contact=r['contact'],
 			version=r['version'], environment=r['environment'], platform=r['platform'],
-			status=r['status'], last_scan=r['last_scan'], reported_to_dpt=r['reported_to_dpt'], 
-			open_issues=r['open_issues'], tags=tags, bundle=bundle
+			status=r['status'], last_scan=r['last_scan'], reported_to_dpt=r['reported_to_dpt'],
+			open_issues=r['open_issues'], tags=tags, bundle=bundle, comments=r['comments']
 		)
 
 		print("[-] application: Insert %s ..." % r)
@@ -147,8 +147,8 @@ def TargetInsert(json_data):
 	for r in json_data:
 		print("connection: %s" % r['connection'])
 		tags = TagInsert(r['tags'])
-		conn = ConnectionInsert([r['connection']]) 
-		
+		conn = ConnectionInsert([r['connection']])
+
 		# Check if any valid connection
 		if conn:
 			connection = conn[0]			# Take first value

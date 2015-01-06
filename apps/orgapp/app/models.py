@@ -54,10 +54,12 @@ class App(Base):
     __tablename__ = "app"
 
     app_id = sql.Column(sql.Integer, primary_key=True)
+    app_name = sql.Column(sql.Text)
     type_id = sql.Column(sql.Integer, sql.ForeignKey('apptype.id'))
     url = sql.Column(sql.Text)
     desc = sql.Column(sql.String(100))
     date_added = sql.Column(sql.Text)
+    comments = sql.Column(sql.Text)
 
     # Contact details
     department_id = sql.Column(sql.Integer, sql.ForeignKey('department.id'))
@@ -94,15 +96,15 @@ class App(Base):
 class AppBundle(Base):
     """ App bundles """
     __tablename__ = "appbundle"
-    
+
     id = sql.Column(sql.Integer, primary_key=True)
-    name = sql.Column(sql.Text)
+    name = sql.Column(sql.Text, unique=True)
     desc = sql.Column(sql.Text)
     contact = sql.Column(sql.Text)
 
     # Define relationships
     #apps = relationship('App', secondary=apps_bundles_table, backref="bundle")
-    
+
     def __unicode__(self):
         #return "%d -> %s" % (self.id, self.name)
         return self.name

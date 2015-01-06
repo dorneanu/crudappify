@@ -26,9 +26,9 @@ class AppAdmin(sqla.ModelView):
     column_display_pk = False
     form_columns = [
         'desc', 'app_type', 'bundle',
-        'version', 'environment', 'platform', 
-        'department', 'contact', 
-        'date_added', 
+        'version', 'environment', 'platform',
+        'department', 'contact',
+        'date_added',
         'status', 'last_scan', 'reported_to_dpt', 'open_issues',
         'tags', 'url'
     ]
@@ -37,7 +37,7 @@ class AppAdmin(sqla.ModelView):
     column_searchable_list = ('desc', 'url', 'version', 'environment', 'platform', 'contact', AppBundle.name, Tag.name)
 
     # Define here filters
-    column_filters = ('desc', 'department', 'app_type', 'url', 'app_id', 'version', 'environment', 'platform', 'date_added', 'tags')
+    column_filters = ('desc', 'app_name', 'department', 'app_type', 'url', 'app_id', 'version', 'environment', 'platform', 'date_added', 'tags')
 
     # Define which fields should be preloaded by Ajax
     form_ajax_refs = {
@@ -91,17 +91,17 @@ class TargetAdmin(sqla.ModelView):
             target = db_session.query(Target).filter_by(id=id).one()
             t.append(target.to_string())
 
-            # Connect to target 
+            # Connect to target
             response = send_request(target.to_string(), t)
-            
-            # Collect headers
+
+            3# Collect headers
             for r in response.headers:
                 headers.append({'header': r, 'value': response.headers[r]})
 
             data.append({'id': id, 'data': headers})
 
         return json.dumps(data, indent=2)
-            
+
 
     def __init__(self, session):
         super(TargetAdmin, self).__init__(Target, session)

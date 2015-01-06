@@ -47,6 +47,7 @@ class AppBundleSerializer(Serializer):
 
 class AppSerializer(Serializer):
     app_id = fields.Integer()
+    app_name = fields.String()
     url = fields.String()
     desc = fields.String()
     date_added = fields.String()
@@ -54,6 +55,7 @@ class AppSerializer(Serializer):
     environment = fields.String()
     platform = fields.String()
     contact = fields.String()
+    comments = fields.String()
 
     # Scan details
     status = fields.String()
@@ -69,5 +71,5 @@ class AppSerializer(Serializer):
 
 class DNSSerializer(Serializer):
     class Meta:
-        fields = ('id', 'domain', 'record', 'value')    
+        fields = ('id', 'domain', 'record', 'value')
 

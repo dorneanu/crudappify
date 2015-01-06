@@ -21,7 +21,7 @@ def create_app(config=None):
 # Add sub-managers
 db_manager = Manager(app=app, help="DB Manager")
 
-# Create app 
+# Create app
 manager = Manager(create_app)
 manager.add_option('-c', '--config', help='Configuration')
 manager.add_command("db", db_manager)
@@ -48,7 +48,6 @@ def create():
     import app.models
 
     Base.metadata.create_all(engine)
-    populate_from_samples()
 
 @db_manager.command
 def recreate():
@@ -58,7 +57,7 @@ def recreate():
 
 @db_manager.command
 def populate():
-    """ Populate database with default data (samples folder) """ 
+    """ Populate database with default data (samples folder) """
     from utils.db import populate_from_samples
     populate_from_samples()
 
@@ -107,7 +106,7 @@ def insert(table=None, jsonfile=None, directory=None):
     else:
         print("[!] Error! See --help")
 
-    
+
 # Manager ---------------------------------------------------------------------
 @manager.command
 def run():
@@ -116,9 +115,9 @@ def run():
 
     # Run WSGI application
     run_simple(
-        app.config['HOST'], 
-        app.config['PORT'], 
-        app, 
+        app.config['HOST'],
+        app.config['PORT'],
+        app,
         use_reloader=app.config['RELOAD'],
         use_debugger=app.config['DEBUG']
     )

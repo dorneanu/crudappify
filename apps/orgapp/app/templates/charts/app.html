@@ -139,6 +139,19 @@
                                                         <td><input type="checkbox" name="col6_regex"  id="col6_regex"></td>
                                                         <td><input type="checkbox" name="col6_smart"  id="col6_smart" checked></td>
                                                     </tr>
+                                                    <tr id="filter_col7">
+                                                        <td>URL(s)</td>
+                                                        <td><input type="text"     name="col7_filter" id="col7_filter"></td>
+                                                        <td><input type="checkbox" name="col7_regex"  id="col7_regex"></td>
+                                                        <td><input type="checkbox" name="col7_smart"  id="col7_smart" checked></td>
+                                                    </tr>
+                                                    <tr id="filter_col8">
+                                                        <td>Tags</td>
+                                                        <td><input type="text"     name="col8_filter" id="col8_filter"></td>
+                                                        <td><input type="checkbox" name="col8_regex"  id="col8_regex"></td>
+                                                        <td><input type="checkbox" name="col8_smart"  id="col8_smart" checked></td>
+                                                    </tr>
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -174,6 +187,10 @@ $.getJSON( "/api/get/apps/table", function( data ) {
             '<tr>'+
                 '<td>ID:</td>'+
                 '<td><a href="/admin/app/edit/?url=/admin/app/&id='+d.app_id+'">'+d.app_id+'</a></td>'+
+            '</tr>'+
+            '<tr>'+
+                '<td>Description:</td>'+
+                '<td>'+d.desc+'</td>'+
             '</tr>'+
             '<tr>'+
                 '<td>Application Type:</td>'+
@@ -220,12 +237,14 @@ $.getJSON( "/api/get/apps/table", function( data ) {
                 "defaultContent": '<span class="glyphicon glyphicon-th-list"></span>',
                 "width":           "20px"
             },
-            { "type": "text", "sTitle": "Description",  "mDataProp": "desc" },
+            { "type": "text", "sTitle": "Name",         "mDataProp": "app_name" },
             { "type": "text", "sTitle": "AppType",      "mDataProp": "app_type.desc" },
             { "type": "text", "sTitle": "Bundle",       "mDataProp": "bundle[0].name" },
             { "type": "text", "sTitle": "Platform",     "mDataProp": "platform" },
             { "type": "text", "sTitle": "Version",      "mDataProp": "version"},
-            { "type": "text", "sTitle": "Status",       "mDataProp": "status" }
+            { "type": "text", "sTitle": "Status",       "mDataProp": "status" },
+            { "type": "text", "sTitle": "URL(s)",       "mDataProp": "url"},
+            { "type": "text", "sTitle": "Tags",         "mDataProp": "comments" }
         ],
         "drawCallback": function ( settings ) {
             var api = this.api();
@@ -235,7 +254,7 @@ $.getJSON( "/api/get/apps/table", function( data ) {
             api.column(3, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
-                        '<tr class="table-group"><td style="background-color: #ECECEC; font-weight: bold;" colspan="7">'+group+'</td></tr>'
+                        '<tr class="table-group"><td style="background-color: #ECECEC; font-weight: bold;" colspan="9">'+group+'</td></tr>'
                     );
  
                     last = group;
@@ -275,6 +294,17 @@ $.getJSON( "/api/get/apps/table", function( data ) {
     $("#col6_filter").keyup( function() { fnFilterColumn("#table-apps", 6); } );
     $("#col6_regex").click(  function() { fnFilterColumn("#table-apps", 6 ); } );
     $("#col6_smart").click(  function() { fnFilterColumn("#table-apps", 6 ); } );
+    
+    // URLs
+    $("#col7_filter").keyup( function() { fnFilterColumn("#table-apps", 7); } );
+    $("#col7_regex").click(  function() { fnFilterColumn("#table-apps", 7 ); } );
+    $("#col7_smart").click(  function() { fnFilterColumn("#table-apps", 7 ); } );
+
+    // Tags
+    $("#col8_filter").keyup( function() { fnFilterColumn("#table-apps", 8); } );
+    $("#col8_regex").click(  function() { fnFilterColumn("#table-apps", 8 ); } );
+    $("#col8_smart").click(  function() { fnFilterColumn("#table-apps", 8 ); } );
+
 
     // Add event listener for opening and closing details
     $('#table-apps tbody').on('click', 'td', function () {
