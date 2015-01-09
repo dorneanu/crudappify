@@ -57,7 +57,7 @@ class App(Base):
     app_name = sql.Column(sql.Text)
     type_id = sql.Column(sql.Integer, sql.ForeignKey('apptype.id'))
     url = sql.Column(sql.Text)
-    desc = sql.Column(sql.String(100))
+    desc = sql.Column(sql.Text)
     date_added = sql.Column(sql.Text)
     comments = sql.Column(sql.Text)
 
