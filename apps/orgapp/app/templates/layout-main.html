@@ -30,8 +30,11 @@
   <!-- bootstrap-table css -->
   <link href="{{ url_for('static', filename='css/plugins/bootstrap-table/bootstrap-table.min.css') }}" rel="stylesheet">
 
-    <!-- bootstrap theme for datatables -->
+  <!-- bootstrap theme for datatables -->
   <link href="{{ url_for('static', filename='css/plugins/dataTables/dataTables.bootstrap.css') }}" rel="stylesheet">
+   
+  <!-- datatables.TableTools -->
+  <link href="{{ url_for('static', filename='css/plugins/dataTables/extra/dataTables.tableTools.css') }}" rel="stylesheet">
 
   <!-- Custom CSS settings -->
   <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
@@ -69,6 +72,7 @@
     <!-- DataTables JavaScript -->
     <script src="{{ url_for('static', filename='js/plugins/dataTables/jquery.dataTables.js') }}"></script>
     <script src="{{ url_for('static', filename='js/plugins/dataTables/dataTables.bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/plugins/dataTables/extra/dataTables.tableTools.js') }}"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="{{ url_for('static', filename='js/sb-admin-2.js') }}"></script>

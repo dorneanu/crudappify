@@ -14,7 +14,57 @@
 					About this app
 				</div>
 				<div class="panel-body">
-					<p>Use the navigation on the Left!</p>
+					<p>This is a tool aimed at categorizing applications inside an organization. 
+                       You can <b>add</b>, <b>edit</b> or <b>delete</b> applications. This tool is 
+                       based on:
+                        <ul>
+                           <li>Python</li>
+                           <li><a href="http://flask.pocoo.org/">Flask</a></li>
+                           <li><a href="https://flask-admin.readthedocs.org">Flask-Admin</a></li>
+                           <li>Some JavaScript</li>
+                           <li>SQLite</li>
+                        </ul>
+                    </p>
+                    <p>Next you'll get some deeper explanations about the <b>entities</b> and their
+                    <b>relationships</b>. At the moment following entities exist:
+                        <ul>
+                            <li><a href="/admin/organization">Organization</a>
+                                <ul>
+                                    <li>The organization describes a structure (company) some apps belong to.</li>
+                                </ul>
+                            </li>
+                            <li><a href="/admin/department">Department</a>
+                                <ul>
+                                    <li>An organzation consists of several departments.</li>
+                                </ul>
+                            </li>
+                            <li><a href="/admin/app">Application</a>
+                                <ul>
+                                    <li>An application is a software meant to do sth.</li>
+                                </ul>
+                            </li>
+                            <li><a href="/admin/apptype">Application Type</a>
+                                <ul>
+                                    <li>There are different types of applications like web apps, mobile apps, libraries, middleware etc.</li>
+                                </ul>
+                            </li>
+                            <li><a href="/admin/appbundle">Application Bundle</a>
+                                <ul>
+                                    <li>Multiple applications may belong to the same construct and be referenced by the same name.</li>
+                                </ul>
+                            </li>
+                            <li><a href="/admin/target">Target</a>
+                                <ul>
+                                    <li>A target defines a URL plus extra information that has to be investigated (before turning into an application).</li>
+                                </ul>
+                            </li>
+                            <li><a href="/admin/tag">Tag</a>
+                                <ul>
+                                    <li>You can tag applications and targets.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </p>
 			  	</div>
 	    	</div>
 	    	<!-- /.panel -->
@@ -24,7 +74,7 @@
 		<div class="col-lg-6">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					ToDo List
+					CHANGELOG
 				</div>
 				<div class="panel-body">
 					<table class="table table-striped table-bordered table-hover" >
@@ -76,4 +126,5 @@
     	<!-- /.col-lg-6 -->
     </div>
     <!-- /.row -->
+
 {% endblock %}

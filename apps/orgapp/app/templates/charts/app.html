@@ -104,7 +104,7 @@
                                                         <td><input type="checkbox" name="global_smart"  id="global_smart"  checked></td>
                                                     </tr>
                                                     <tr id="filter_col1">
-                                                        <td>Description</td>
+                                                        <td>Name</td>
                                                         <td><input type="text"     name="col1_filter" id="col1_filter"></td>
                                                         <td><input type="checkbox" name="col1_regex"  id="col1_regex"></td>
                                                         <td><input type="checkbox" name="col1_smart"  id="col1_smart" checked></td>
@@ -244,7 +244,18 @@ $.getJSON( "/api/get/apps/table", function( data ) {
             { "type": "text", "sTitle": "Version",      "mDataProp": "version"},
             { "type": "text", "sTitle": "Status",       "mDataProp": "status" },
             { "type": "text", "sTitle": "URL(s)",       "mDataProp": "url"},
-            { "type": "text", "sTitle": "Tags",         "mDataProp": "comments" }
+
+            /* Construct string from Tags List */
+            { "type": "text", "sTitle": "Tags",         "mDataProp": 
+                function (data, type, val) {
+                    tags = data.tags;
+                    tags_list = [];
+                    $.each(tags, function (key, value) {
+                        tags_list.push(value.name);
+                    });
+                    return tags_list.join(", ");
+                }
+            },
         ],
         "drawCallback": function ( settings ) {
             var api = this.api();
