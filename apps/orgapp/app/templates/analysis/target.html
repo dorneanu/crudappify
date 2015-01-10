@@ -112,10 +112,16 @@
                                                 <td><input type="checkbox" name="col4_smart"  id="col4_smart" checked></td>
                                             </tr>
                                             <tr id="filter_col5">
-                                                <td>Tags</td>
+                                                <td>Priority</td>
                                                 <td><input type="text"     name="col5_filter" id="col5_filter"></td>
                                                 <td><input type="checkbox" name="col5_regex"  id="col5_regex"></td>
                                                 <td><input type="checkbox" name="col5_smart"  id="col5_smart" checked></td>
+                                            </tr>
+                                            <tr id="filter_col6">
+                                                <td>Tags</td>
+                                                <td><input type="text"     name="col6_filter" id="col6_filter"></td>
+                                                <td><input type="checkbox" name="col6_regex"  id="col6_regex"></td>
+                                                <td><input type="checkbox" name="col6_smart"  id="col6_smart" checked></td>
                                             </tr>
                                         </tbody>
                                             </table>
@@ -171,7 +177,7 @@ $.getJSON( "/api/get/targets/table", function( data ) {
         return '<table class="table">'+
             '<tr>'+
                 '<td>ID:</td>'+
-                '<td><a href="/admin/target/edit/?url=/admin%/target/&id='+d.id+'">'+d.id+'</a></td>'+
+                '<td><a href="/admin/target/edit/?url=/admin/target/&id='+d.id+'">'+d.id+'</a></td>'+
             '</tr>'+
             '<tr>'+
                 '<td>Tags:</td>'+
@@ -233,6 +239,7 @@ $.getJSON( "/api/get/targets/table", function( data ) {
             { "type": "text", "sTitle": "Netloc",   "mDataProp": "netloc" , "bRegex": true},
             { "type": "text", "sTitle": "Port",   "mDataProp": "port" , "bRegex": true},
             { "type": "text", "sTitle": "Query", "mDataProp": "query", "bRegex": true},
+            { "type": "text", "sTitle": "Priority", "mDataProp": "priority", "bRegex": true},
             
             /* Construct string from Tags List */
             { "type": "text", "sTitle": "Tags",         "mDataProp": 
@@ -276,10 +283,15 @@ $.getJSON( "/api/get/targets/table", function( data ) {
     $("#col4_regex").click(  function() { fnFilterColumn("#table-targets", 4 ); } );
     $("#col4_smart").click(  function() { fnFilterColumn("#table-targets", 4 ); } );
 
-    // Tags
+    // Priority
     $("#col5_filter").keyup( function() { fnFilterColumn("#table-targets", 5); } );
     $("#col5_regex").click(  function() { fnFilterColumn("#table-targets", 5 ); } );
     $("#col5_smart").click(  function() { fnFilterColumn("#table-targets", 5 ); } );
+    
+    // Tags
+    $("#col6_filter").keyup( function() { fnFilterColumn("#table-targets", 6); } );
+    $("#col6_regex").click(  function() { fnFilterColumn("#table-targets", 6 ); } );
+    $("#col6_smart").click(  function() { fnFilterColumn("#table-targets", 6 ); } );
     
     // Add event listener for opening and closing details
     $('#table-targets tbody').on('click', 'td', function () {

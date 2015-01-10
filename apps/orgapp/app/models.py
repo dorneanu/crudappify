@@ -129,6 +129,7 @@ class Target(Base):
     params = sql.Column(sql.Text)
     query = sql.Column(sql.Text)
     fragment = sql.Column(sql.Text)
+    priority = sql.Column(sql.Text)
     comments = sql.Column(sql.Text)
 
     # Add connection

@@ -37,7 +37,7 @@ class TargetSerializer(Serializer):
     tags = fields.Nested(TagSerializer, many=True)
     connection = fields.Nested(ConnectionSerializer)
     class Meta :
-        fields = ('id', 'scheme', 'user', 'password', 'netloc', 'port', 'path', 'params', 'query', 'fragment', 'comments', 'tags', 'connection')
+        fields = ('id', 'scheme', 'user', 'password', 'netloc', 'port', 'path', 'params', 'query', 'fragment', 'comments', 'priority', 'tags', 'connection')
 
 
 class AppBundleSerializer(Serializer):

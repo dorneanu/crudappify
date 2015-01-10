@@ -14,15 +14,15 @@ apps = Blueprint('apps', __name__,)
 def index():
     return render_template("index.html")
 
-@apps.route("/charts/<table>")
-def charts(table=None):
+@apps.route("/analysis/<table>")
+def analysis(table=None):
     """ Create some table specific charts """
     if table == "apps":
         apps = App.query.all()
-        return render_template('charts/app.html')
+        return render_template('analysis/app.html')
 
     elif table == "targets":
-        return render_template('charts/target.html')
+        return render_template('analysis/target.html')
     else:
         return "<p>ERROR</p>"
 
@@ -41,7 +41,7 @@ def targets(mode=None):
         for t in tags:
             count = targets.filter(Target.tags.any(Tag.name.startswith(t))).count()
             tags_count[t] = count
-            
+
         # Transform to JSON
         df = pd.DataFrame(pd.Series(tags_count))
         df = df.reset_index()
@@ -49,8 +49,8 @@ def targets(mode=None):
         json_obj = df.to_dict(outtype="records")
 
         # Build dict
-        json_dict = { 
-            "tags": json_obj, 
+        json_dict = {
+            "tags": json_obj,
             "discrete": [{ "key": "Cumulative Return", "values": json_obj }]
         }
 
@@ -60,13 +60,13 @@ def targets(mode=None):
     elif mode == "table":
         serialized = srlz.TargetSerializer(targets.all(), many=True);
         json_dict = { "data" : serialized.data}
-        
+
         return jsonify(json_dict)
 
     # No mode specified
     else:
         return 'No mode specified'
-        
+
 
 @apps.route('/api/get/apps/<mode>')
 def applications(mode=None):
@@ -88,4 +88,4 @@ def applications(mode=None):
 
 
 
- 
+

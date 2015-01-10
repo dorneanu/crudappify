@@ -67,8 +67,8 @@ class AppBundleAdmin(sqla.ModelView):
 class TargetAdmin(sqla.ModelView):
     list_template = "list.html"
 
-    column_filters = ('scheme', 'user', 'password', 'netloc', 'port', 'path', 'params', 'query', 'fragment', 'comments')
-    column_searchable_list = ('scheme', 'user', 'password', 'netloc', 'path', 'params', 'query', 'fragment', 'comments', Tag.name)
+    column_filters = ('scheme', 'user', 'password', 'netloc', 'port', 'path', 'params', 'query', 'fragment', 'priority', 'comments')
+    column_searchable_list = ('scheme', 'user', 'password', 'netloc', 'path', 'params', 'query', 'fragment', 'priority', 'comments', Tag.name)
 
     form_ajax_refs = {
         'tags': {

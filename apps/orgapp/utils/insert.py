@@ -167,6 +167,7 @@ def TargetInsert(json_data):
 			query = r['query'],
 			fragment = r['fragment'],
 			comments = r['comments'],
+                        priority = r['priority'],
 			tags = tags,
 			connection = connection
 		)
