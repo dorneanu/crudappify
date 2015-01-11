@@ -82,7 +82,7 @@
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Filters</a>
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Collapse/Expand Filters</a>
                                         </h4>
                                     </div>
                                     <div id="collapseOne" class="panel-collapse collapse in">
@@ -226,8 +226,24 @@ $.getJSON( "/api/get/apps/table", function( data ) {
     // Create DataTables
     var table = $('#table-apps').DataTable( {
         "bProcessing": true,
-        "sDom": '<"top">rt<"bottom"flp><"clear">',
+        "sDom": 'T<"clear"><"top">rt<"bottom"flp><"clear">',
         "aaData": data['data'],
+        "tableTools": {
+            "sRowSelect": "os",
+            "aButtons": [
+                "copy",
+                "print",
+                "select_all", 
+                "select_none",
+                {
+                    "sExtends":    "collection",
+
+                    "sButtonText": "Save",
+                    "aButtons":    [ "csv", "xls", "pdf" ]
+                }
+            ],
+            "sSwfPath": "/static/js/plugins/dataTables/copy_csv_xls_pdf.swf"
+        },
         "aoColumns": [
                 {
                 "class":          'details-control',
@@ -318,7 +334,7 @@ $.getJSON( "/api/get/apps/table", function( data ) {
 
 
     // Add event listener for opening and closing details
-    $('#table-apps tbody').on('click', 'td', function () {
+    $('#table-apps tbody').on('click', '.details-control', function () {
         var tr = $(this).closest('tr');
         console.log(table.row);
         var row = table.row(tr);

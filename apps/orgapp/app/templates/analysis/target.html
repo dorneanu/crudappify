@@ -66,7 +66,7 @@
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Toggle Filters</a>
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Collapse/Expand Filters</a>
                                         </h4>
                                     </div>
                                     <div id="collapseOne" class="panel-collapse collapse in">
@@ -224,7 +224,23 @@ $.getJSON( "/api/get/targets/table", function( data ) {
     // Create DataTables
     var table = $('#table-targets').DataTable( {
         "bProcessing": true,
-        "sDom": '<"top">rt<"bottom"flp><"clear">',
+        "sDom": 'T<"clear"><"top">rt<"bottom"flp><"clear">',
+        "tableTools": {
+            "sRowSelect": "os",
+            "aButtons": [
+                "copy",
+                "print",
+                "select_all", 
+                "select_none",
+                {
+                    "sExtends":    "collection",
+
+                    "sButtonText": "Save",
+                    "aButtons":    [ "csv", "xls", "pdf" ]
+                }
+            ],
+            "sSwfPath": "/static/js/plugins/dataTables/copy_csv_xls_pdf.swf"
+        },
         "aaData": data['data'],
         "aoColumns": [
             {
@@ -294,7 +310,7 @@ $.getJSON( "/api/get/targets/table", function( data ) {
     $("#col6_smart").click(  function() { fnFilterColumn("#table-targets", 6 ); } );
     
     // Add event listener for opening and closing details
-    $('#table-targets tbody').on('click', 'td', function () {
+    $('#table-targets tbody').on('click', '.details-control', function () {
         var tr = $(this).closest('tr');
         console.log(table.row);
         var row = table.row(tr);
