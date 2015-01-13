@@ -1,12 +1,11 @@
 # Set the path
 import os, sys
 import csv
-import pandas as pd
 import json
 from flask import Flask, current_app, jsonify
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from flask.ext.script import Manager, prompt_bool
+from flask.ext.script import Manager, prompt_bool, Command, Option
 from werkzeug.serving import run_simple
 from app import app, register_blueprints
 
@@ -26,6 +25,44 @@ manager = Manager(create_app)
 manager.add_option('-c', '--config', help='Configuration')
 manager.add_command("db", db_manager)
 
+# Gunicorn -------------------------------------------------------------------
+class GunicornServer(Command):
+
+    description = 'Run the app within Gunicorn'
+
+    def __init__(self, host='0.0.0.0', port=int(os.environ.get("PORT", 33507)), workers=4):
+        self.port = port
+        self.host = host
+        self.workers = workers
+
+    def get_options(self):
+        return [
+            Option('-t', '--host', dest='host', default=self.host),
+            Option('-p', '--port', dest='port', type=int, default=self.port),
+            Option('-w', '--workers', dest='workers', type=int, default=self.workers),
+        ]
+
+    def run(self, *args, **kwargs):
+        from gunicorn.app.base import Application
+        host = kwargs['host']
+        port = kwargs['port']
+        workers = kwargs['workers']
+
+        # Register blueprints
+        register_blueprints(app)
+
+        print("Starting gunicorn server on %s:%d ...\n " % (host, port))
+        class FlaskApplication(Application):
+            def init(self, parser, opts, args):
+                return {
+                    'bind': '{0}:{1}'.format(host, port),
+                    'workers': workers
+                }
+
+            def load(self):
+                return app
+
+        FlaskApplication().run()
 
 # DB Manager ------------------------------------------------------------------
 @db_manager.command
@@ -109,11 +146,11 @@ def insert(table=None, jsonfile=None, directory=None):
 
 # Manager ---------------------------------------------------------------------
 @manager.command
-def run():
+def devrun():
+    """ Run debugable web server """
     # Register blueprints
     register_blueprints(app)
 
-    # Run WSGI application
     run_simple(
         app.config['HOST'],
         app.config['PORT'],
@@ -121,6 +158,9 @@ def run():
         use_reloader=app.config['RELOAD'],
         use_debugger=app.config['DEBUG']
     )
+
+# Add gunicorn command to the manager
+manager.add_command("gunicorn", GunicornServer())
 
 if __name__ == "__main__":
     manager.run()
