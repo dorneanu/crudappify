@@ -1,0 +1,117 @@
+[
+  {
+    "comments": "",
+    "connection": {
+      "answer": null,
+      "conn_type": null,
+      "id": null,
+      "ip": null,
+      "port": null,
+      "redirect": null,
+      "tags": {
+        "desc": null,
+        "id": null,
+        "name": null
+      },
+      "url": null
+    },
+    "fragment": "",
+    "id": 1,
+    "netloc": "yahoofinance.net",
+    "params": "",
+    "password": "",
+    "path": "/admin",
+    "port": 80,
+    "priority": "",
+    "query": "",
+    "scheme": "http",
+    "tags": [
+      {
+        "desc": "Security related",
+        "id": 1,
+        "name": "security"
+      }
+    ],
+    "user": ""
+  },
+  {
+    "comments": "Possible security issue",
+    "connection": {
+      "answer": null,
+      "conn_type": null,
+      "id": null,
+      "ip": null,
+      "port": null,
+      "redirect": null,
+      "tags": {
+        "desc": null,
+        "id": null,
+        "name": null
+      },
+      "url": null
+    },
+    "fragment": "",
+    "id": 2,
+    "netloc": "google.com",
+    "params": "p=1",
+    "password": "",
+    "path": "admin",
+    "port": 8005,
+    "priority": "",
+    "query": "",
+    "scheme": "https",
+    "tags": [
+      {
+        "desc": "Customer related stuff",
+        "id": 4,
+        "name": "customer"
+      },
+      {
+        "desc": "Security related",
+        "id": 1,
+        "name": "security"
+      }
+    ],
+    "user": ""
+  },
+  {
+    "comments": "FTP open",
+    "connection": {
+      "answer": null,
+      "conn_type": null,
+      "id": null,
+      "ip": null,
+      "port": null,
+      "redirect": null,
+      "tags": {
+        "desc": null,
+        "id": null,
+        "name": null
+      },
+      "url": null
+    },
+    "fragment": "",
+    "id": 3,
+    "netloc": "yahoofinance.net",
+    "params": "",
+    "password": "admin",
+    "path": "/",
+    "port": 21,
+    "priority": "",
+    "query": "",
+    "scheme": "ftp",
+    "tags": [
+      {
+        "desc": "External  application ",
+        "id": 3,
+        "name": "external"
+      },
+      {
+        "desc": "Security related",
+        "id": 1,
+        "name": "security"
+      }
+    ],
+    "user": "admin"
+  }
+]

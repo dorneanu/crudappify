@@ -1,0 +1,20 @@
+[
+  {
+    "contact": "gmail@google.com",
+    "desc": "Google Mail Application Bundle",
+    "id": 1,
+    "name": "Google Mail"
+  },
+  {
+    "contact": "yf@yahoo.com",
+    "desc": "Yahoo Finance Application Bundle",
+    "id": 2,
+    "name": "Yahoo Finance"
+  },
+  {
+    "contact": "it@microsoft.com",
+    "desc": "IT Helpdesk ",
+    "id": 3,
+    "name": "IT Helpdesk"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "desc": "Web Application",
+    "id": 1
+  },
+  {
+    "desc": "Web Service",
+    "id": 2
+  },
+  {
+    "desc": "Mobile Application",
+    "id": 3
+  },
+  {
+    "desc": "Software Framework",
+    "id": 4
+  },
+  {
+    "desc": "Software Library",
+    "id": 5
+  },
+  {
+    "desc": "Middleware",
+    "id": 6
+  }
+]

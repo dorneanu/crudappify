@@ -1,0 +1,27 @@
+[
+  {
+    "desc": "Security related",
+    "id": 1,
+    "name": "security"
+  },
+  {
+    "desc": "Internal application",
+    "id": 2,
+    "name": "internal"
+  },
+  {
+    "desc": "External  application ",
+    "id": 3,
+    "name": "external"
+  },
+  {
+    "desc": "Customer related stuff",
+    "id": 4,
+    "name": "customer"
+  },
+  {
+    "desc": "to be tested",
+    "id": 5,
+    "name": "tbd"
+  }
+]
