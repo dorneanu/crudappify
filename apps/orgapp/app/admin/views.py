@@ -5,7 +5,7 @@ from flask.ext.admin.contrib import sqla
 from flask.ext.admin import Admin, BaseView, expose
 from flask.ext.admin.base import MenuLink
 from flask.ext.admin.babel import gettext, ngettext, lazy_gettext
-from flask.ext.admin.form import Select2TagsWidget, Select2Field, Select2TagsField
+from flask.ext.admin.form import Select2TagsWidget, Select2Field, Select2TagsField, rules
 from flask.ext.admin.actions import action
 from wtforms import validators, fields
 
@@ -24,20 +24,28 @@ class AppTypeAdmin(sqla.ModelView):
 class AppAdmin(sqla.ModelView):
     list_template = "list.html"
     column_display_pk = False
+
+    # Allow only pre-defined values
+    form_overrides = dict(severity=fields.SelectField)
+    form_args = dict(
+        severity = dict(
+            choices = [('High', 'High'), ('Medium', 'Medium'), ('Low', 'Low')]
+    ))
+
     form_columns = [
-        'desc', 'app_type', 'bundle',
+        'app_name', 'desc', 'app_type', 'bundle',
         'version', 'environment', 'platform',
         'department', 'contact',
         'date_added',
         'status', 'last_scan', 'reported_to_dpt', 'open_issues',
-        'tags', 'url'
+        'severity', 'tags', 'url', 'comments'
     ]
 
     # Add here list of columns where to search
     column_searchable_list = ('desc', 'url', 'version', 'environment', 'platform', 'contact', AppBundle.name, Tag.name)
 
     # Define here filters
-    column_filters = ('desc', 'app_name', 'department', 'app_type', 'url', 'app_id', 'version', 'environment', 'platform', 'date_added', 'tags')
+    column_filters = ('desc', 'app_name', 'department', 'app_type', 'url', 'app_id', 'version', 'environment', 'platform', 'date_added', 'tags', 'severity')
 
     # Define which fields should be preloaded by Ajax
     form_ajax_refs = {
@@ -55,6 +63,16 @@ class AppAdmin(sqla.ModelView):
         }
     }
 
+    # Group fields
+    form_create_rules = [
+        rules.FieldSet(('app_name', 'desc', 'app_type', 'bundle', 'url', 'severity', 'tags', 'comments'), 'Application'),
+        rules.FieldSet(('version', 'environment', 'platform', 'status'), 'Technical details'),
+        rules.FieldSet(('contact', 'department'), 'Contact'),
+        rules.FieldSet(('open_issues', 'last_scan', 'reported_to_dpt'), 'Audit details'),
+    ]
+    # Use same rule set for editing pages
+    form_edit_rules = form_create_rules
+
     def __init__(self, session):
         # Just call parent class with predefined model
         super(AppAdmin, self).__init__(App, session)
@@ -66,6 +84,14 @@ class AppBundleAdmin(sqla.ModelView):
 
 class TargetAdmin(sqla.ModelView):
     list_template = "list.html"
+    column_display_pk = False
+
+    # Allow only pre-defined values
+    form_overrides = dict(priority=fields.SelectField)
+    form_args = dict(
+        priority = dict(
+            choices = [('High', 'High'), ('Medium', 'Medium'), ('Low', 'Low')]
+    ))
 
     column_filters = ('scheme', 'user', 'password', 'netloc', 'port', 'path', 'params', 'query', 'fragment', 'priority', 'comments')
     column_searchable_list = ('scheme', 'user', 'password', 'netloc', 'path', 'params', 'query', 'fragment', 'priority', 'comments', Tag.name)
@@ -75,6 +101,14 @@ class TargetAdmin(sqla.ModelView):
             'fields': (Tag.name,)
         }
     }
+
+    # Group fields
+    form_create_rules = [
+        rules.FieldSet(('scheme', 'user', 'password', 'netloc', 'port', 'path', 'query', 'fragment'), 'URL Info'),
+        rules.FieldSet(('priority', 'tags', 'comments', 'connection'), 'Audit details')
+    ]
+    # Use same rule set for editing pages
+    form_edit_rules = form_create_rules
 
     @expose("/export")
     def action_export(self):
@@ -94,7 +128,7 @@ class TargetAdmin(sqla.ModelView):
             # Connect to target
             response = send_request(target.to_string(), t)
 
-            3# Collect headers
+            # Collect headers
             for r in response.headers:
                 headers.append({'header': r, 'value': response.headers[r]})
 
@@ -108,8 +142,9 @@ class TargetAdmin(sqla.ModelView):
 
 
 class OrgAdmin(sqla.ModelView):
-    list_template = "list.html"
+    # list_template = "list.html"
     column_display_pk = True
+
 
 
 class DepartmentAdmin(sqla.ModelView):
