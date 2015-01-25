@@ -41,6 +41,7 @@
           <div class="row">
               <div class="col-lg-12">
                  {{ layout.messages() }}
+                 {% set render_ctx = h.resolve_ctx() %} 
                  {% block body %}{% endblock %}
               </div>
           </div>
