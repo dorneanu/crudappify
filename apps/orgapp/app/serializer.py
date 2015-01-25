@@ -56,6 +56,7 @@ class AppSerializer(Serializer):
     platform = fields.String()
     contact = fields.String()
     comments = fields.String()
+    severity = fields.String()
 
     # Scan details
     status = fields.String()

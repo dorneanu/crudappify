@@ -60,6 +60,7 @@ class App(Base):
     desc = sql.Column(sql.Text)
     date_added = sql.Column(sql.Text)
     comments = sql.Column(sql.Text)
+    severity = sql.Column(sql.Text(10))
 
     # Contact details
     department_id = sql.Column(sql.Integer, sql.ForeignKey('department.id'))

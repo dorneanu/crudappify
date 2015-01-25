@@ -125,13 +125,13 @@ def AppInsert(json_data):
 
 		# Insert tags
 		tags = TagInsert(r['tags'])
-
 		app = App(
 			app_id=int(r['app_id']), app_type=apptype[0], app_name=r['app_name'], url=r['url'],
                         desc=r['desc'], date_added=r['date_added'], contact=r['contact'],
 			version=r['version'], environment=r['environment'], platform=r['platform'],
 			status=r['status'], last_scan=r['last_scan'], reported_to_dpt=r['reported_to_dpt'],
-			open_issues=r['open_issues'], tags=tags, bundle=bundle, comments=r['comments']
+			open_issues=r['open_issues'], tags=tags, bundle=bundle, comments=r['comments'],
+                        severity=r['severity']
 		)
 
 		print("[-] application: Insert %s ..." % r)
