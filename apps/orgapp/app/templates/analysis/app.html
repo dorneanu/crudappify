@@ -27,54 +27,110 @@
                     <div class="tab-content">
                         <div class="tab-pane fade in active" id="discrete">
                             <br/>
-                            <div class="col-lg-6">
+                            <div class="col-lg-4">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                       Status
+                                       Severity
                                     </div>
                                     <!-- /.panel-heading -->
                                     <div class="panel-body">
                                         <div>
-                                            <div id="discrete_bar_chart_status"></div>
+                                            <div id="severity_pie_chart"></div>
                                         </div>
                                     </div>
                                     <!-- /.panel-body -->
                                 </div>
                                 <!-- /.panel -->
                             </div>
-                            <!-- /.col-lg-6 -->
-                            <div class="col-lg-6">
+                            <!-- /.col-lg-3 -->
+
+                            <div class="col-lg-8">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                       Platform
+                                       Tags multiselect
                                     </div>
                                     <!-- /.panel-heading -->
                                     <div class="panel-body">
-                                        <div>
-                                            <div id="discrete_bar_chart_platform"></div>
+                                        <!-- Nav tabs -->
+                                        <ul class="nav nav-tabs">
+                                            <li class="active"><a href="#selected-tags" data-toggle="tab">Home</a>
+                                            </li>
+                                            <li><a href="#selected-tags-settings" data-toggle="tab">Settings</a>
+                                            </li>
+                                            <li ><a hre="#" id="selected-tags-button">Update chart</a>
+                                            </li>
+                                        </ul>
+
+                                        <!-- Tab panes -->
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade in active" id="selected-tags">
+                                                </br>
+                                                <div>
+                                                    <div id="selected-tags-chart"></div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="selected-tags-settings">
+                                                </br>
+                                                <div> 
+                                                    <table cellpadding="0" cellspacing="0" border="0" id="selected-tags-settings-table" class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Primary</th>
+                                                                <th>Secondary</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <select class="bootstrap-multiselect primary" id="multiselect-known" multiple="multiple">
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="bootstrap-multiselect secondary" id="multiselect-known" multiple="multiple">
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <select class="bootstrap-multiselect primary" id="multiselect-known" multiple="multiple">
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="bootstrap-multiselect secondary" id="multiselect-known" multiple="multiple">
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <select class="bootstrap-multiselect primary" id="multiselect-known" multiple="multiple">
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="bootstrap-multiselect secondary" id="multiselect-known" multiple="multiple">
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <select class="bootstrap-multiselect primary" id="multiselect-known" multiple="multiple">
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="bootstrap-multiselect secondary" id="multiselect-known" multiple="multiple">
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                    </table>
+
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- /.panel-body -->
                                 </div>
                                 <!-- /.panel -->
                             </div>
-                            <!-- /.col-lg-6 -->
-                            <div class="col-lg-6">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                       App Type
-                                    </div>
-                                    <!-- /.panel-heading -->
-                                    <div class="panel-body">
-                                        <div>
-                                            <div id="discrete_bar_chart_apptype"></div>
-                                        </div>
-                                    </div>
-                                    <!-- /.panel-body -->
-                                </div>
-                                <!-- /.panel -->
-                            </div>
-                            <!-- /.col-lg-6 -->
+                            <!-- /.col-lg-9 -->
                         </div>
                         <div class="tab-pane fade in" id="datatables-table">
                             <h4>Data Tables</h4>
@@ -151,7 +207,12 @@
                                                         <td><input type="checkbox" name="col8_regex"  id="col8_regex"></td>
                                                         <td><input type="checkbox" name="col8_smart"  id="col8_smart" checked></td>
                                                     </tr>
-
+                                                    <tr id="filter_col9">
+                                                        <td>Severity</td>
+                                                        <td><input type="text"     name="col9_filter" id="col9_filter"></td>
+                                                        <td><input type="checkbox" name="col9_regex"  id="col9_regex"></td>
+                                                        <td><input type="checkbox" name="col9_smart"  id="col9_smart" checked></td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -178,6 +239,58 @@
 {% block scripts %}
 
 <script type="text/javascript">
+
+// Get tags and initialize multiselects
+$.getJSON( "/api/get/targets/tags", function( data ) {
+    var tags = [];
+
+    // Extract only tag names
+    for (t in data['tags']) {
+        tags.push(data['tags'][t].label)
+    }
+
+    // Create select lists
+    $.each(tags, function(key, value) {
+        $('.bootstrap-multiselect')
+            .append($("<option></option>")
+            .attr("value",key)
+            .text(value)); 
+    });
+    $('.bootstrap-multiselect').multiselect({
+        includeSelectAllOption: true,
+        enableFiltering: true
+    });
+
+    // Add click event to the button
+    $('#selected-tags-button').click(function () {
+        var opts = [];
+
+        $('#selected-tags-settings-table > tbody > tr').each(function () {
+            $this = $(this)
+            var main = $this.find(".primary");
+            var sub = $this.find(".secondary");
+
+            // Append to list
+            opts.push({ 'main': get_multiselect_by_obj(main), 
+                        'sub' : get_multiselect_by_obj(sub)
+            });
+        });
+
+        // Get counts from DB
+        $.ajax({
+            url: '/api/get/selected-tags',
+            type: 'POST',
+            data: JSON.stringify(opts),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            async: false,
+            success: function(msg) {
+               d3.select('#selected-tags-chart svg').remove();
+               dimplejs_horiz_stacked_grouped_bar(msg, '#selected-tags-chart');
+            }
+        });
+    });
+});
 
 $.getJSON( "/api/get/apps/table", function( data ) {
 /* Formatting function for row details - modify as you need */
@@ -272,6 +385,7 @@ $.getJSON( "/api/get/apps/table", function( data ) {
                     return tags_list.join(", ");
                 }
             },
+            { "type": "text", "sTitle": "Severity",       "mDataProp": "severity"},
         ],
         "drawCallback": function ( settings ) {
             var api = this.api();
@@ -281,9 +395,8 @@ $.getJSON( "/api/get/apps/table", function( data ) {
             api.column(3, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
-                        '<tr class="table-group"><td style="background-color: #ECECEC; font-weight: bold;" colspan="9">'+group+'</td></tr>'
-                    );
- 
+                        '<tr class="table-group"><td style="background-color: #ECECEC; font-weight: bold;" colspan="10">'+group+'</td></tr>'
+                    )
                     last = group;
                 }
             } );
@@ -331,6 +444,11 @@ $.getJSON( "/api/get/apps/table", function( data ) {
     $("#col8_filter").keyup( function() { fnFilterColumn("#table-apps", 8); } );
     $("#col8_regex").click(  function() { fnFilterColumn("#table-apps", 8 ); } );
     $("#col8_smart").click(  function() { fnFilterColumn("#table-apps", 8 ); } );
+    
+    // Tags
+    $("#col9_filter").keyup( function() { fnFilterColumn("#table-apps", 9); } );
+    $("#col9_regex").click(  function() { fnFilterColumn("#table-apps", 9 ); } );
+    $("#col9_smart").click(  function() { fnFilterColumn("#table-apps", 9 ); } );
 
 
     // Add event listener for opening and closing details
@@ -385,12 +503,18 @@ $.getJSON( "/api/get/apps/table", function( data ) {
 
 
     // Add charts
-    addDiscreteChart(get_status_data(data['data']), "#discrete_bar_chart_status");
-    addDiscreteChart(get_platform_data(data['data']),"#discrete_bar_chart_platform")
-    addDiscreteChart(get_apptype_data(data['data']),"#discrete_bar_chart_apptype")
+    // addDiscreteChart(get_status_data(data['data']), "#discrete_bar_chart_status");
+    // addDiscreteChart(get_platform_data(data['data']),"#discrete_bar_chart_platform")
+    // addDiscreteChart(get_apptype_data(data['data']),"#discrete_bar_chart_apptype")
 
     // Add total number of items
     $('#tab-datatables').text("Applications (" + data['data'].length+ ")");
+});
+
+// Get severities
+$.getJSON( "/api/get/apps/severity", function( data ) {
+	// Add charts
+	nvd3_pie_chart(data['severities'], "#severity_pie_chart");
 });
 
 </script>

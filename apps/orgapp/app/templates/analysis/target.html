@@ -26,32 +26,31 @@
                     <!-- Tab panes -->
                     <div class="tab-content">
                         <div class="tab-pane fade in active" id="discrete">
-                            <br/>
-                            <div class="col-lg-6">
+                            </br>
+                            <div class="col-lg-4">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                       Discrete Bar Chart
+                                       Priorities
                                     </div>
                                     <!-- /.panel-heading -->
                                     <div class="panel-body">
                                         <div>
-                                            <div id="discrete_bar_chart"></div>
+                                            <div id="priority_pie_chart"></div>
                                         </div>
                                     </div>
                                     <!-- /.panel-body -->
                                 </div>
                                 <!-- /.panel -->
                             </div>
-                            <!-- /.col-lg-6 -->
-                            <div class="col-lg-6">
+                            <div class="col-lg-8">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                       Pie Chart
+                                       All tags
                                     </div>
                                     <!-- /.panel-heading -->
                                     <div class="panel-body">
                                         <div>
-                                            <div id="pie_chart"></div>
+                                            <div id="discrete_bar_chart"></div>
                                         </div>
                                     </div>
                                     <!-- /.panel-body -->
@@ -154,9 +153,15 @@ var targets_data = [];
 $.getJSON( "/api/get/targets/tags", function( data ) {
 
 	// Add charts
-	addDiscreteChart(data['discrete'], "#discrete_bar_chart");
-	addPieChart(data['tags'], "#pie_chart");
+	// addDiscreteChart(data['discrete'], "#discrete_bar_chart");
+    dimplejs_horizontal_bar(data['tags'], '#discrete_bar_chart');
+	nvd3_pie_chart(data['tags'], "#pie_chart");
+});
 
+// Get priorities
+$.getJSON( "/api/get/targets/priority", function( data ) {
+	// Add charts
+	nvd3_pie_chart(data['priorities'], "#priority_pie_chart");
 });
 
 
@@ -255,7 +260,7 @@ $.getJSON( "/api/get/targets/table", function( data ) {
             { "type": "text", "sTitle": "Netloc",   "mDataProp": "netloc" , "bRegex": true},
             { "type": "text", "sTitle": "Port",   "mDataProp": "port" , "bRegex": true},
             { "type": "text", "sTitle": "Path", "mDataProp": "path", "bRegex": true},
-            { "type": "text", "sTitle": "Priority", "mDataProp": "priority", "bRegex": true},
+            { "type": "text", "sTitle": "Priority", "mDataProp": "priority", "bSortable": true, "bRegex": true},
             
             /* Construct string from Tags List */
             { "type": "text", "sTitle": "Tags",         "mDataProp": 
